@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Calendar, Github, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react"
+import { Calendar, Mail, MapPin, Phone } from "lucide-react"
+import { GithubIcon as Github, TwitterIcon as Twitter, LinkedinIcon as Linkedin } from "@/components/ui/brand-icons"
 import { Container } from "./container"
 
 const productLinks = [

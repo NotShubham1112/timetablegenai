@@ -125,7 +125,7 @@ export default function FeaturesPage() {
               </div>
 
               <div className="lg:col-span-7">
-                <Accordion type="single" collapsible className="w-full space-y-4">
+                <Accordion className="w-full space-y-4">
                   {featureDetails.map((feature) => (
                     <AccordionItem 
                       key={feature.id} 

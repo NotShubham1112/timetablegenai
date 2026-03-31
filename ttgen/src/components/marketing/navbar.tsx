@@ -161,7 +161,7 @@ const ListItem = React.forwardRef<
 >(({ className, title, children, icon: Icon, ...props }, ref) => {
   return (
     <li>
-      <NavigationMenuLink asChild>
+      <NavigationMenuLink>
         <a
           ref={ref}
           className={cn(

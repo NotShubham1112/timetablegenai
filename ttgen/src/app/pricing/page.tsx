@@ -243,7 +243,7 @@ export default function PricingPage() {
                 Everything you need to know about our pricing and services.
               </p>
             </div>
-            <Accordion type="single" collapsible className="w-full space-y-2">
+            <Accordion className="w-full space-y-2">
               {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`faq-${index}`} className="border rounded-lg px-4 hover:bg-muted/50 transition-colors">
                   <AccordionTrigger className="hover:no-underline font-medium py-5">

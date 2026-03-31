@@ -10,10 +10,9 @@ import {
   CalendarDays, 
   Share2, 
   Copy, 
-  Linkedin, 
-  Twitter, 
   MessageSquare
 } from "lucide-react"
+import { LinkedinIcon as Linkedin, TwitterIcon as Twitter } from "@/components/ui/brand-icons"
 import Link from "next/link"
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
