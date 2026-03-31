@@ -6,7 +6,7 @@ import { Section } from "@/components/marketing/section"
 import { Container } from "@/components/marketing/container"
 import { CTA } from "@/components/marketing/cta"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, User, Share2, Twitter, Linkedin, Facebook } from "lucide-react"
+import { ArrowLeft, Calendar, User, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -70,9 +70,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   <div className="flex items-center gap-2 text-sm uppercase tracking-widest font-bold"><Calendar className="h-4 w-4" /> {post.date}</div>
                   <div className="h-10 w-px bg-border/50 hidden sm:block" />
                   <div className="flex items-center gap-2">
-                     <Button variant="ghost" size="icon" className="rounded-full select-none"><Twitter className="h-4 w-4" /></Button>
-                     <Button variant="ghost" size="icon" className="rounded-full select-none"><Linkedin className="h-4 w-4" /></Button>
-                     <Button variant="ghost" size="icon" className="rounded-full select-none"><Facebook className="h-4 w-4" /></Button>
+                     <Button variant="ghost" size="icon" className="rounded-full select-none"><Share2 className="h-4 w-4" /></Button>
                   </div>
                </div>
             </div>

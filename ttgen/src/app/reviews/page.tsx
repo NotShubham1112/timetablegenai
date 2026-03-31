@@ -97,7 +97,7 @@ export default function ReviewsPage() {
                        <div>
                           <div className="flex items-center gap-2">
                              <p className="font-bold">{review.author}</p>
-                             <CheckCircle className="h-3 w-3 text-primary fill-primary/10" title="Verified User" />
+                             <span title="Verified User"><CheckCircle className="h-3 w-3 text-primary fill-primary/10" /></span>
                           </div>
                           <p className="text-sm text-muted-foreground">{review.role} at {review.institution}</p>
                        </div>

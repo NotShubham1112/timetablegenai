@@ -66,7 +66,7 @@ export default function FeaturesPage() {
                       <p className="text-muted-foreground leading-relaxed">
                         Our core engine uses a combination of constraints-based logic and genetic algorithms to solve NP-hard scheduling problems in seconds.
                       </p>
-                      <Accordion type="single" collapsible className="w-full">
+                      <Accordion className="w-full">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Multi-Objective Optimization</AccordionTrigger>
                           <AccordionContent>
@@ -103,7 +103,7 @@ export default function FeaturesPage() {
                       <p className="text-muted-foreground leading-relaxed">
                         Efficiently manage every square foot of your campus. From large auditoriums to specialized research labs.
                       </p>
-                      <Accordion type="single" collapsible className="w-full">
+                      <Accordion className="w-full">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Proximity Mapping</AccordionTrigger>
                           <AccordionContent>
