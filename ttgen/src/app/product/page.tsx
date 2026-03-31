@@ -1,185 +1,181 @@
+import React from "react"
 import { Navbar } from "@/components/marketing/navbar"
 import { Footer } from "@/components/marketing/footer"
-import { Container } from "@/components/marketing/container"
+import { Hero } from "@/components/marketing/hero"
 import { Section } from "@/components/marketing/section"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Container } from "@/components/marketing/container"
+import { CTA } from "@/components/marketing/cta"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { 
-  FileSearch, 
-  Zap, 
-  AlertCircle, 
-  MapPin, 
-  Users, 
+import {
+  FileSearch,
+  Zap,
+  AlertCircle,
+  MapPin,
+  Users,
   Download,
-  ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Cpu,
+  Database,
+  Globe,
 } from "lucide-react"
-import Link from "next/link"
-
-const features = [
-  {
-    title: "AI-based Syllabus Extraction",
-    description: "Automatically parse complex syllabus PDFs and extract course codes, credits, and contact hours with 99% accuracy.",
-    icon: FileSearch,
-  },
-  {
-    title: "Automated Schedule Generation",
-    description: "Multi-objective optimization algorithm to generate thousands of possible schedules and pick the most efficient one.",
-    icon: Zap,
-  },
-  {
-    title: "Conflicts & Batch Resolution",
-    description: "System intelligently handles batch splitting and resolves overlapping sessions for both faculty and classrooms.",
-    icon: AlertCircle,
-  },
-  {
-    title: "Classroom & Lab Allocation",
-    description: "Dynamic mapping of groups to suitable venues based on capacity, equipment, and distance constraints.",
-    icon: MapPin,
-  },
-  {
-    title: "Faculty Load Management",
-    description: "Balance teaching hours across your entire faculty automatically, respecting preferences and seniority.",
-    icon: Users,
-  },
-  {
-    title: "Export as PDF/Excel",
-    description: "One-click export for individual departments, faculty schedules, and master institution-wide views.",
-    icon: Download,
-  },
-]
 
 export default function ProductPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1">
-        {/* Hero Section */}
-        <Section className="relative overflow-hidden pt-20 pb-32">
-          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:40px_40px]" />
-          <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-background to-transparent" />
-          
-          <Container className="relative">
-            <div className="text-center space-y-8 max-w-3xl mx-auto">
-              <Badge variant="outline" className="px-3 py-1 text-sm font-medium border-primary/20 bg-primary/5 text-primary">
-                The Future of Scheduling
-              </Badge>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-                The All-In-One Timetable Automation Platform
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Empower your institution with AI that turns syllabus PDFs into optimized, 
-                conflict-free schedules in minutes. Not hours.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Button size="lg" className="px-8 h-12 text-base font-semibold group rounded-full" asChild>
-                  <Link href="/register">
-                    Get Started Free
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="px-8 h-12 text-base font-semibold rounded-full">
-                  Book a Demo
-                </Button>
-              </div>
-            </div>
+      
+      <main>
+        <Hero
+          badge="Product Overview"
+          title={
+            <>
+              Deep Tech for <span className="text-primary">Institutional Planning</span>
+            </>
+          }
+          description="A complete infrastructure for managing academic logistics at scale. From automated syllabus extraction to multi-objective scheduling optimization."
+          ctaText="Request Enterprise Demo"
+          ctaHref="/company/contact"
+        />
 
-            {/* Placeholder for Product UI Image */}
-            <div className="mt-20 relative rounded-xl border bg-card/50 overflow-hidden shadow-2xl p-2 backdrop-blur-sm group">
-               <div className="aspect-[16/9] w-full bg-muted/20 flex items-center justify-center rounded-lg border border-dashed border-muted-foreground/20">
-                  <div className="text-center">
-                    <LayoutDashboard className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-                    <p className="text-sm text-muted-foreground/50">Timetable Generation Dashboard Preview</p>
-                  </div>
-               </div>
-               <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
-            </div>
-          </Container>
-        </Section>
-
-        {/* Feature Grid */}
+        {/* Syllabus AI Section */}
         <Section variant="muted">
           <Container>
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-3xl font-bold tracking-tight">Powerful Features, Zero Effort</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Everything you need to manage your institution's scheduling from a single, 
-                intuitive dashboard.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature, i) => (
-                <Card key={i} className="bg-background/50 border-none shadow-sm hover:shadow-md transition-shadow group">
-                  <CardHeader>
-                    <div className="mb-4 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
-                      <feature.icon className="h-6 w-6 text-primary" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-6">
+                <Badge className="bg-primary/10 text-primary border-primary/20">Syllabus AI</Badge>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Zero-Entry Data Extraction</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Our proprietary AI models parse through unstructured syllabus PDFs from any university format. It automatically identifies:
+                </p>
+                <ul className="space-y-4">
+                  {[
+                    "Course codes and credit structures",
+                    "Mandatory vs Elective contact hours",
+                    "Laboratory to Theory ratios",
+                    "Prerequisite dependencies for scheduling"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center">
+                        <CheckCircle2 className="h-3 w-3 text-primary" />
+                      </div>
+                      <span className="font-medium">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-card border border-border/50 rounded-3xl p-8 shadow-xl">
+                 <div className="space-y-4">
+                    <div className="h-4 w-1/2 bg-muted rounded animate-pulse" />
+                    <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+                    <div className="h-32 bg-primary/5 border border-primary/10 rounded-xl flex items-center justify-center">
+                       <FileSearch className="h-12 w-12 text-primary/40" />
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="text-base pt-2">{feature.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
+                    <div className="h-4 w-2/3 bg-muted rounded animate-pulse" />
+                 </div>
+              </div>
             </div>
           </Container>
         </Section>
 
-        {/* CTA Section */}
+        {/* Conflict Engine Section */}
         <Section>
-          <Container variant="narrow">
-            <div className="rounded-3xl bg-primary px-8 py-16 text-center text-primary-foreground relative overflow-hidden shadow-xl">
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent" />
-               <div className="relative z-10 space-y-8">
-                 <h2 className="text-3xl md:text-5xl font-bold">Ready to modernize your institute?</h2>
-                 <p className="text-xl text-primary-foreground/80 max-w-lg mx-auto">
-                   Join 500+ colleges using TimetablePro to automate their scheduling workflows.
-                 </p>
-                 <div className="flex justify-center pt-4">
-                   <Button size="xl" variant="secondary" className="px-10 h-14 text-lg font-bold rounded-full group shadow-lg hover:shadow-xl transition-all" asChild>
-                     <Link href="/register">
-                       Start Your Free Trial
-                       <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                     </Link>
-                   </Button>
-                 </div>
-                 <div className="flex items-center justify-center gap-6 pt-4 text-sm font-medium text-primary-foreground/60">
-                   <div className="flex items-center gap-2">
-                     <CheckCircle2 className="h-4 w-4" />
-                     No credit card required
+          <Container>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center lg:flex-row-reverse">
+              <div className="lg:order-2 space-y-6">
+                <Badge className="bg-primary/10 text-primary border-primary/20">Conflict Resolution</Badge>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">The Optimization Core</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Our genetic algorithm explores millions of permutations to find the optimal schedule while balancing 50+ institutional constraints.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="p-4 rounded-xl bg-card border border-border/50 space-y-2">
+                      <Cpu className="h-5 w-5 text-primary" />
+                      <p className="font-bold">Faculty Load</p>
+                      <p className="text-xs text-muted-foreground">Ensures fair work distribution and respects preferred off-hours.</p>
                    </div>
-                   <div className="flex items-center gap-2">
-                     <CheckCircle2 className="h-4 w-4" />
-                     Setup in 15 minutes
+                   <div className="p-4 rounded-xl bg-card border border-border/50 space-y-2">
+                      <Database className="h-5 w-5 text-primary" />
+                      <p className="font-bold">Resource Mapping</p>
+                      <p className="text-xs text-muted-foreground">Optimal classroom sizing and proximity mapping for labs.</p>
                    </div>
-                 </div>
-               </div>
+                </div>
+              </div>
+              <div className="lg:order-1 relative">
+                 <div className="aspect-square bg-primary/10 rounded-full blur-3xl absolute inset-0" />
+                 <Card className="relative bg-background/50 border-border/50 overflow-hidden backdrop-blur-xl">
+                    <CardHeader>
+                       <CardTitle>Global Conflict Log</CardTitle>
+                       <CardDescription>Real-time constraint monitoring</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                       {[
+                         { msg: "Prof. Smith: Consecutive Lab Limit Exceeded", type: "warning" },
+                         { msg: "Room 102: Capacity Overload (Batch B)", type: "error" },
+                         { msg: "Conflict Resolved: Advanced Physics → Lab 04", type: "success" }
+                       ].map((log, i) => (
+                         <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
+                            <AlertCircle className={cn("h-4 w-4", 
+                              log.type === "error" ? "text-destructive" : 
+                              log.type === "warning" ? "text-amber-500" : "text-emerald-500"
+                            )} />
+                            <span className="text-xs font-medium">{log.msg}</span>
+                         </div>
+                       ))}
+                    </CardContent>
+                 </Card>
+              </div>
             </div>
           </Container>
         </Section>
+
+        {/* Global Scalability */}
+        <Section variant="surface">
+           <Container>
+              <div className="text-center mb-16 space-y-4">
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Enterprise Infrastructure</h2>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Built on modern cloud architecture to handle institutions with 50,000+ students across multiple campuses.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  { icon: Globe, title: "Multi-Campus Support", desc: "Manage separate branches with a unified administrative dashboard." },
+                  { icon: Users, title: "SSO & RBAC", desc: "Integrate with Microsoft/Google SSO and set granular permissions." },
+                  { icon: Zap, title: "Web-Scale API", desc: "Connect your existing ERP or Student Information System effortlessly." }
+                ].map((item, i) => (
+                  <div key={i} className="text-center space-y-4 p-6 hover:bg-muted/50 rounded-2xl transition-colors">
+                     <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                        <item.icon className="h-8 w-8 text-primary" />
+                     </div>
+                     <h3 className="text-xl font-bold">{item.title}</h3>
+                     <p className="text-muted-foreground">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+           </Container>
+        </Section>
+
+        <CTA 
+          title="Transform your institutional planning"
+          description="Join 200+ universities that have already digitized their scheduling workflows."
+          ctaText="Contact Sales"
+          ctaHref="/company/contact"
+        />
       </main>
+
       <Footer />
     </div>
   )
 }
 
-function LayoutDashboard(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="7" height="9" x="3" y="3" rx="1" />
-      <rect width="7" height="5" x="14" y="3" rx="1" />
-      <rect width="7" height="9" x="14" y="12" rx="1" />
-      <rect width="7" height="5" x="3" y="16" rx="1" />
-    </svg>
-  )
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(" ")
 }
+

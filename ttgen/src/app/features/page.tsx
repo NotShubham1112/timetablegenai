@@ -1,164 +1,194 @@
+import React from "react"
 import { Navbar } from "@/components/marketing/navbar"
 import { Footer } from "@/components/marketing/footer"
-import { Container } from "@/components/marketing/container"
+import { Hero } from "@/components/marketing/hero"
 import { Section } from "@/components/marketing/section"
-import { Badge } from "@/components/ui/badge"
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
+import { Container } from "@/components/marketing/container"
+import { CTA } from "@/components/marketing/cta"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion"
-import { 
-  BrainCircuit, 
-  Database, 
-  Layers, 
-  GitBranch, 
-  Microscope, 
-  UserSquare2, 
-  ShieldCheck, 
-  Cloud 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Users,
+  Grid,
+  Calendar,
+  Zap,
+  ShieldCheck,
+  FileText,
+  Clock,
+  Layers,
 } from "lucide-react"
-
-const featureDetails = [
-  {
-    id: "syllabus-ai",
-    title: "Syllabus Parsing AI",
-    description: "Our proprietary NLP model extracts structured data from unstructured academic documents. It identifies course credits, contact hours, and prerequisites automatically.",
-    details: "Trained on over 100,000 university syllabus formats, the TimetablePro AI can handle tables, multi-column layouts, and nested headers typical of engineering and medical curriculums.",
-    icon: BrainCircuit,
-  },
-  {
-    id: "resource-allocation",
-    title: "Smart Resource Allocation",
-    description: "Constraint-based engine for optimal classroom and laboratory usage. Minimizes 'dead time' and campus travel distance.",
-    details: "The engine considers room capacity, specialized equipment (like AV systems or specialized hardware), and accessibility requirements while maximizing overall occupancy rates.",
-    icon: Database,
-  },
-  {
-    id: "multi-semester",
-    title: "Multi-semester Support",
-    description: "Plan for the entire academic year across all departments simultaneously. Sync even and odd semester requirements.",
-    details: "TimetablePro maintains a holistic view of your academic cycle, allowing you to rollover successful patterns and adjust for new faculty or student intake variations.",
-    icon: Layers,
-  },
-  {
-    id: "batch-splitting",
-    title: "Batch Splitting Logic",
-    description: "Intelligently divide large student groups for tutorial and practical sessions based on faculty availability.",
-    details: "Automatically handle 30+ students per batch splitting into smaller groups of 15 for lab sessions, ensuring no student has back-to-back intense practicals.",
-    icon: GitBranch,
-  },
-  {
-    id: "lab-engine",
-    title: "Lab Scheduling Engine",
-    description: "Specialized logic for handling complex laboratory requirements, equipment sharing, and safety buffer times.",
-    details: "Supports concurrent lab sessions, equipment-specific constraints, and the mandatory setup/cleanup times required between sessions.",
-    icon: Microscope,
-  },
-  {
-    id: "faculty-views",
-    title: "Faculty Timetable Views",
-    description: "Personalized portals for faculty members to view, manage, and sync their schedules with Google/Outlook calendars.",
-    details: "Faculty can mark unavailability, request swaps through the admin, and receive real-time notifications for any changes to their weekly schedule.",
-    icon: UserSquare2,
-  },
-  {
-    id: "admin-controls",
-    title: "Admin Controls",
-    description: "Enterprise-grade user management with role-based access control for deans, department heads, and registrars.",
-    details: "Audit logs for every change made, version control for timetable drafts, and restricted access to sensitive faculty performance data.",
-    icon: ShieldCheck,
-  },
-  {
-    id: "cloud-infra",
-    title: "High Availability Cloud Infra",
-    description: "Powered by 99.9% uptime infrastructure with automatic backups and multi-region redundancy.",
-    details: "Your academic data is encrypted at rest and in transit. We ensure that your critical scheduling information is always accessible and never lost.",
-    icon: Cloud,
-  },
-]
 
 export default function FeaturesPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1">
-        {/* Features Header */}
-        <Section className="bg-muted/10 border-b">
-          <Container>
-            <div className="max-w-2xl">
-              <Badge variant="outline" className="mb-4">Capabilities</Badge>
-              <h1 className="text-4xl font-bold tracking-tight mb-6">Deeply Detailed Features</h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Explore the advanced logic and enterprise-grade tools that make TimetablePro 
-                the world's most powerful scheduling platform for higher education.
-              </p>
-            </div>
-          </Container>
-        </Section>
+      
+      <main>
+        <Hero
+          badge="Feature Deep-Dive"
+          title={
+            <>
+              Engineered for <span className="text-primary">Academic Excellence</span>
+            </>
+          }
+          description="Explore the advanced capabilities that make TimetablePro the leading choice for modern university administrative teams."
+          ctaText="Start Free Trial"
+        />
 
-        {/* Feature Accordion Section */}
-        <Section>
+        {/* Categories Tabs */}
+        <Section variant="muted">
           <Container>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-              <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
-                <h2 className="text-3xl font-bold">Built for Scale and Precision</h2>
-                <p className="text-lg text-muted-foreground">
-                  Our platform is not just a calendar tool. It's a complex optimization 
-                  engine designed to solve the hardest scheduling problems in academia.
-                </p>
-                <div className="pt-4 space-y-4">
-                   <div className="flex items-center gap-3">
-                     <div className="h-2 w-2 rounded-full bg-primary" />
-                     <span className="text-sm font-medium">99.9% Conflict-free Generation</span>
+            <Tabs defaultValue="scheduling" className="w-full">
+              <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto p-1 bg-background border border-border/50 rounded-xl mb-12">
+                <TabsTrigger value="scheduling" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Smart Scheduling
+                </TabsTrigger>
+                <TabsTrigger value="resource" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Grid className="mr-2 h-4 w-4" />
+                  Resource Management
+                </TabsTrigger>
+                <TabsTrigger value="admin" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <ShieldCheck className="mr-2 h-4 w-4" />
+                  Admin Control
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="scheduling" className="space-y-12 animate-in fade-in-50 duration-500">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                   <div className="space-y-6">
+                      <h3 className="text-3xl font-bold">Intelligent Core Algorithm</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Our core engine uses a combination of constraints-based logic and genetic algorithms to solve NP-hard scheduling problems in seconds.
+                      </p>
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger>Multi-Objective Optimization</AccordionTrigger>
+                          <AccordionContent>
+                            Balances student satisfaction (no gaps), faculty preferences (morning/evening), and institutional costs (room utilization).
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                          <AccordionTrigger>Gap Minimization</AccordionTrigger>
+                          <AccordionContent>
+                            Ensures students have a compact day without unnecessary 3-4 hour breaks between classes.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-3">
+                          <AccordionTrigger>Elective Conflict Resolution</AccordionTrigger>
+                          <AccordionContent>
+                            Smartly maps elective streams to ensure no student has a conflict between their major and minor subjects.
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                    </div>
-                   <div className="flex items-center gap-3">
-                     <div className="h-2 w-2 rounded-full bg-primary" />
-                     <span className="text-sm font-medium">SOC2 Type II Compliant Infra</span>
-                   </div>
-                   <div className="flex items-center gap-3">
-                     <div className="h-2 w-2 rounded-full bg-primary" />
-                     <span className="text-sm font-medium">API Integration with major ERPs</span>
+                   <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center border border-border/50">
+                      <Zap className="h-20 w-20 text-primary/20" />
                    </div>
                 </div>
-              </div>
+              </TabsContent>
 
-              <div className="lg:col-span-7">
-                <Accordion className="w-full space-y-4">
-                  {featureDetails.map((feature) => (
-                    <AccordionItem 
-                      key={feature.id} 
-                      value={feature.id}
-                      className="border rounded-lg px-6 bg-card/30 data-[state=open]:bg-card/80 transition-colors"
-                    >
-                      <AccordionTrigger className="hover:no-underline py-6">
-                        <div className="flex items-center gap-4 text-left">
-                          <div className="p-2 rounded-md bg-primary/10 text-primary">
-                            <feature.icon className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <span className="text-lg font-semibold block">{feature.title}</span>
-                            <span className="text-sm font-normal text-muted-foreground block mt-1 line-clamp-1 group-data-[state=open]:hidden">
-                              {feature.description}
-                            </span>
-                          </div>
+              <TabsContent value="resource" className="space-y-12 animate-in fade-in-50 duration-500">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                   <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center border border-border/50 order-2 md:order-1">
+                      <Layers className="h-20 w-20 text-primary/20" />
+                   </div>
+                   <div className="space-y-6 order-1 md:order-2">
+                      <h3 className="text-3xl font-bold">Dynamic Venue Allocation</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Efficiently manage every square foot of your campus. From large auditoriums to specialized research labs.
+                      </p>
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger>Proximity Mapping</AccordionTrigger>
+                          <AccordionContent>
+                            Minimizes travel time for faculty and students by keeping consecutive classes in the same building wing.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                          <AccordionTrigger>Equipment-Based Routing</AccordionTrigger>
+                          <AccordionContent>
+                            Automatically routes classes to rooms with necessary equipment (projectors, smartboards, or high-end GPUs).
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-3">
+                          <AccordionTrigger>Shared Resource Pooling</AccordionTrigger>
+                          <AccordionContent>
+                            Manage shared resources (like meeting halls or labs) across different departments with centralized priority rules.
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                   </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="admin" className="space-y-12 animate-in fade-in-50 duration-500">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-center pt-8">
+                   {[
+                     { icon: Users, title: "Faculty Portal", desc: "Allows faculty to view their schedules and submit leaves directly." },
+                     { icon: Clock, title: "Real-time Updates", desc: "Instant notifications for emergency schedule changes via Pushover/SMS." },
+                     { icon: FileText, title: "Audit Logging", desc: "Full history of every manual override and schedule change." }
+                   ].map((feat, i) => (
+                     <div key={i} className="p-8 rounded-2xl bg-background border border-border/50 space-y-4">
+                        <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                           <feat.icon className="h-6 w-6 text-primary" />
                         </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-6 text-muted-foreground leading-relaxed">
-                        <p className="mb-4 text-foreground font-medium">{feature.description}</p>
-                        <p className="border-l-2 pl-4 border-primary/30 py-2 italic text-sm">
-                          {feature.details}
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </div>
-            </div>
+                        <h4 className="font-bold text-lg">{feat.title}</h4>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{feat.desc}</p>
+                     </div>
+                   ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           </Container>
         </Section>
+
+        {/* Detailed Breakdown */}
+        <Section>
+           <Container>
+              <div className="flex flex-col md:flex-row items-center gap-12 mb-24">
+                 <div className="flex-1 space-y-4">
+                    <h2 className="text-3xl font-bold">Advanced Management</h2>
+                    <p className="text-muted-foreground">Go beyond simple grids with tools designed for complex institution hierarchies.</p>
+                 </div>
+                 <div className="flex gap-4">
+                    <div className="px-6 py-2 rounded-full border border-border bg-muted/50 text-sm font-medium">99.9% Uptime</div>
+                    <div className="px-6 py-2 rounded-full border border-border bg-muted/50 text-sm font-medium">SSO Ready</div>
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12">
+                 {[
+                   { title: "Parallel Batch Logic", desc: "Handle multiple batches for the same subject simultaneously without venue overlap." },
+                   { title: "Holiday Integration", desc: "Sync with national and institutional calendars to avoid scheduling on break days." },
+                   { title: "Manual Overrides", desc: "Fix specific slots manually; the engine will re-optimize the rest around your lock." },
+                   { title: "Load Analytics", desc: "Visual heatmaps of room and faculty utilization across the entire semester." },
+                   { title: "PDF Watermarking", desc: "Automatically brand your exported schedules with institution logos and watermarks." },
+                   { title: "API First", desc: "Every feature is available via a secure REST API for deep institutional integrations." }
+                 ].map((item, i) => (
+                   <div key={i} className="space-y-4">
+                      <div className="h-2 w-12 bg-primary rounded-full group-hover:w-full transition-all" />
+                      <h3 className="font-bold text-xl">{item.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed italic">{item.desc}</p>
+                   </div>
+                 ))}
+              </div>
+           </Container>
+        </Section>
+
+        <CTA 
+          title="See these features in action"
+          description="Schedule a customized walkthrough with our product experts and see how TimetablePro fits your department."
+          ctaText="Book a Walkthrough"
+          ctaHref="/company/contact"
+        />
       </main>
+
       <Footer />
     </div>
   )

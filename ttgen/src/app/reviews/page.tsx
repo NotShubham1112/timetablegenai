@@ -1,160 +1,146 @@
+import React from "react"
 import { Navbar } from "@/components/marketing/navbar"
 import { Footer } from "@/components/marketing/footer"
-import { Container } from "@/components/marketing/container"
+import { Hero } from "@/components/marketing/hero"
 import { Section } from "@/components/marketing/section"
+import { Container } from "@/components/marketing/container"
+import { CTA } from "@/components/marketing/cta"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle,
-  CardDescription 
-} from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, Quote, MessageSquareQuote } from "lucide-react"
+import { Star, Quote, CheckCircle } from "lucide-react"
 
-const testimonials = [
+const reviews = [
   {
-    name: "Dr. Sandeep Verma",
-    role: "HOD, Computer Science",
-    avatar: "/avatars/hod-1.jpg",
+    author: "Dr. Robert Chen",
+    role: "Department Head",
+    institution: "IIT Delhi",
+    content: "The syllabus AI is a game-changer. We used to spend weeks manually counting credits and contact hours. TimetablePro does it in seconds with perfect accuracy.",
     rating: 5,
-    content: "Calculating faculty load and ensuring no lab overlap was a nightmare. TimetablePro's AI logic handled 450 students and 20 faculty in under 10 minutes. Game changer for our department.",
+    featured: true,
   },
   {
-    name: "Prof. Megha Iyer",
-    role: "Assistant Professor",
-    avatar: "/avatars/prof-1.jpg",
+    author: "Sarah Jenkins",
+    role: "Academic Registrar",
+    institution: "University of Manchester",
+    content: "Scheduling for 5,000+ students across multiple buildings was always a nightmare. The conflict resolution engine in TimetablePro is the best we've ever used.",
     rating: 5,
-    content: "I love that I can sync my generated timetable directly with my Google Calendar. The automated split into tutorial batches for my 3rd-year students was flawless.",
+    featured: false,
   },
   {
-    name: "Rahul Deshmukh",
-    role: "Student Rep, Final Year",
-    avatar: "/avatars/student-1.jpg",
-    rating: 4,
-    content: "Our classes are finally balanced. No more long gaps between core lectures and our practical sessions are better spaced out. It feels much more organized.",
+    author: "Prof. Maria Garcia",
+    role: "Dean of Faculty",
+    institution: "Technological University of Madrid",
+    content: "TimetablePro respects our faculty preferences while ensuring zero overlaps. Our professor satisfaction scores have increased by 40% since implementation.",
+    rating: 5,
+    featured: false,
   },
   {
-    name: "Mr. Satish Kulkarni",
-    role: "Admin, Academic Cell",
-    avatar: "/avatars/admin-1.jpg",
+    author: "James Wilson",
+    role: "IT Director",
+    institution: "Sydney Institute of Technology",
+    content: "The API-first approach allowed us to integrate TimetablePro with our existing ERP in less than a week. Highly recommended for large scale institutions.",
     rating: 5,
-    content: "The syllabus extraction tool is magic. We uploaded 15 different department syllabus PDFs and it extracted everything perfectly. Saved us weeks of data entry.",
+    featured: true,
   },
   {
-    name: "Dr. Amit Singhal",
-    role: "Principal, SVIT",
-    avatar: "/avatars/hod-2.jpg",
+    author: "Linda Thompson",
+    role: "Scheduling Coordinator",
+    institution: "Toronto Metro University",
+    content: "We've tried every legacy scheduling software on the market. TimetablePro is the only one that actually understands how modern universities operate.",
     rating: 5,
-    content: "The reporting dashboard gave us insights into classroom utilization we never had. We realized we were overusing our main auditorium while smaller halls were empty.",
-  },
-  {
-    name: "Neha Kapoor",
-    role: "Faculty, Civil Dept",
-    avatar: "/avatars/prof-2.jpg",
-    rating: 5,
-    content: "The faculty load balancing is very fair. It respected my research hours and didn't give me any early morning slots as requested. High-quality automation.",
+    featured: false,
   },
 ]
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[...Array(5)].map((_, i) => (
-        <Star 
-          key={i} 
-          className={`h-4 w-4 ${i < rating ? "fill-primary text-primary" : "fill-muted text-muted"}`} 
-        />
-      ))}
-    </div>
-  )
-}
-
 export default function ReviewsPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1">
-        {/* Reviews Hero */}
-        <Section className="bg-primary pt-24 pb-16 text-primary-foreground relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/10 to-transparent" />
-          <Container className="relative z-10">
-            <div className="text-center max-w-2xl mx-auto space-y-6">
-              <Badge variant="secondary" className="px-3 py-1 font-bold">Trusted by 500+ Institutes</Badge>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">Hear it from the Users</h1>
-              <p className="text-xl text-primary-foreground/80 leading-relaxed">
-                From academic deans to student representatives, here's how 
-                TimetablePro is making everyday campus life better.
-              </p>
-            </div>
-          </Container>
-        </Section>
+      
+      <main>
+        <Hero
+          badge="Wall of Love"
+          title={
+            <>
+              Trusted by <span className="text-primary">Academic Leaders</span>
+            </>
+          }
+          description="See how institutions around the world are transforming their administrative workflows with TimetablePro."
+        />
 
-        {/* Testimonial Grid */}
-        <Section>
+        <Section variant="muted">
           <Container>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, i) => (
-                <Card key={i} className="bg-muted/10 border-none shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                   <div className="absolute top-4 right-4 text-primary/10 group-hover:text-primary/20 transition-colors">
-                      <MessageSquareQuote className="h-12 w-12" />
-                   </div>
-                   <CardHeader className="relative">
-                      <div className="pb-4">
-                        <StarRating rating={testimonial.rating} />
-                      </div>
-                      <CardTitle className="text-base font-normal leading-relaxed text-foreground/80 italic">
-                        "{testimonial.content}"
-                      </CardTitle>
-                   </CardHeader>
-                   <CardContent className="pt-6 border-t bg-muted/20">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-12 w-12 border-2 border-background">
-                           <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                              {testimonial.name[0]}
-                           </AvatarFallback>
-                        </Avatar>
-                        <div>
-                           <h4 className="font-bold text-sm">{testimonial.name}</h4>
-                           <p className="text-xs text-muted-foreground uppercase tracking-wider">{testimonial.role}</p>
-                        </div>
-                      </div>
-                   </CardContent>
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+              {reviews.map((review, i) => (
+                <Card key={i} className={cn(
+                  "break-inside-avoid bg-background/50 border-border/50 hover:border-primary/30 transition-all group",
+                  review.featured && "md:col-span-2 border-primary/20 bg-primary/5"
+                )}>
+                  <CardContent className="p-8 space-y-6">
+                    <div className="flex items-center justify-between">
+                       <div className="flex gap-1">
+                         {[...Array(review.rating)].map((_, j) => (
+                           <Star key={j} className="h-4 w-4 text-primary fill-primary" />
+                         ))}
+                       </div>
+                       <Quote className="h-8 w-8 text-muted-foreground/20 group-hover:text-primary/20 transition-colors" />
+                    </div>
+                    
+                    <p className="text-lg leading-relaxed italic text-foreground">
+                      "{review.content}"
+                    </p>
+                    
+                    <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+                       <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-primary/20 to-primary/40 flex items-center justify-center font-bold text-primary">
+                          {review.author.charAt(0)}
+                       </div>
+                       <div>
+                          <div className="flex items-center gap-2">
+                             <p className="font-bold">{review.author}</p>
+                             <CheckCircle className="h-3 w-3 text-primary fill-primary/10" title="Verified User" />
+                          </div>
+                          <p className="text-sm text-muted-foreground">{review.role} at {review.institution}</p>
+                       </div>
+                    </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>
           </Container>
         </Section>
 
-        {/* Stats Section */}
-        <Section variant="muted" className="border-y">
+        <Section>
            <Container>
-              <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                 <div className="max-w-md space-y-4">
-                    <h2 className="text-3xl font-bold">A New Standard in Academic Scheduling</h2>
-                    <p className="text-muted-foreground">
-                       We pride ourselves on maintaining a 4.9/5 satisfaction rate across 
-                       private and governmental institutes alike.
-                    </p>
-                 </div>
-                 <div className="grid grid-cols-2 gap-8 md:gap-16">
-                    <div className="text-center">
-                       <h3 className="text-5xl font-extrabold text-primary">4.9</h3>
-                       <p className="text-xs font-bold uppercase tracking-widest mt-2">Overall Rating</p>
-                       <StarRating rating={5} />
-                    </div>
-                    <div className="text-center">
-                       <h3 className="text-5xl font-extrabold text-primary">99.2%</h3>
-                       <p className="text-xs font-bold uppercase tracking-widest mt-2">Retention Rate</p>
-                       <div className="flex items-center justify-center gap-1 mt-1 font-bold text-primary italic">Excellent</div>
-                    </div>
+              <div className="bg-primary/5 rounded-[3rem] p-8 md:p-16 border border-primary/10">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+                    {[
+                      { value: "98%", label: "Satisfaction Rate" },
+                      { value: "500k+", label: "Slots Optimized" },
+                      { value: "200+", label: "Universities" },
+                      { value: "15+", label: "Countries" }
+                    ].map((stat, i) => (
+                      <div key={i} className="space-y-2">
+                         <div className="text-4xl md:text-5xl font-black text-primary">{stat.value}</div>
+                         <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{stat.label}</div>
+                      </div>
+                    ))}
                  </div>
               </div>
            </Container>
         </Section>
+
+        <CTA 
+          title="Join the community of efficient educators"
+          description="Stop manual scheduling today. Your teachers and students will thank you."
+          ctaText="Start Free Today"
+        />
       </main>
+
       <Footer />
     </div>
   )
+}
+
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(" ")
 }

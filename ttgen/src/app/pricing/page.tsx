@@ -1,177 +1,145 @@
+import React from "react"
+import Link from "next/link"
 import { Navbar } from "@/components/marketing/navbar"
 import { Footer } from "@/components/marketing/footer"
-import { Container } from "@/components/marketing/container"
+import { Hero } from "@/components/marketing/hero"
 import { Section } from "@/components/marketing/section"
+import { Container } from "@/components/marketing/container"
+import { CTA } from "@/components/marketing/cta"
 import { Button } from "@/components/ui/button"
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Check, 
-  HelpCircle, 
-  Info, 
-  Minus,
-  Sparkles
-} from "lucide-react"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { CheckCircle2, XCircle } from "lucide-react"
 
-const pricingTiers = [
+const tiers = [
   {
-    name: "Free",
+    name: "Starter",
     price: "₹0",
-    description: "Try TimetablePro with limited features for small departments.",
+    description: "For individual professors or small departments.",
     features: [
-      "1 Department limit",
-      "Up to 20 Faculty members",
-      "Manual batch definitions",
-      "PDF export only",
-      "Standard community support",
+      "1 Departmental Timetable",
+      "Syllabus AI (5 uploads/mo)",
+      "Basic Conflict Detection",
+      "PDF Export",
+      "Email Support",
     ],
-    cta: "Start Free",
+    notIncluded: [
+      "Excel Export",
+      "Multi-Campus Logic",
+      "SSO Integration",
+      "Priority API Access",
+    ],
+    cta: "Get Started",
     popular: false,
   },
   {
-    name: "Standard",
-    price: "₹999",
+    name: "Pro",
+    price: "₹1,499",
     period: "/mo",
-    description: "Optimize your department scheduling with automated AI tools.",
+    description: "Full-scale solution for entire engineering colleges.",
     features: [
-      "Up to 3 Departments",
-      "50 Faculty members",
-      "AI syllabus extraction",
-      "Automated generation",
-      "PDF & Excel export",
-      "Email support",
+      "Unlimited Timetables",
+      "Unlimited Syllabus Parsing",
+      "Advanced Multi-Batch Engine",
+      "Excel & CSV Export",
+      "Priority Support",
+      "Custom Watermarking",
     ],
-    cta: "Start Standard",
+    notIncluded: [
+      "SSO Integration",
+      "Dedicated Database",
+    ],
+    cta: "Start 14-day Trial",
     popular: true,
-  },
-  {
-    name: "Professional",
-    price: "₹2999",
-    period: "/mo",
-    description: "Full automation for entire mid-sized colleges.",
-    features: [
-      "Unlimited Departments",
-      "200 Faculty members",
-      "Advanced conflict resolution",
-      "Classroom distance optimization",
-      "Priority faculty views",
-      "Priority support",
-    ],
-    cta: "Start Pro",
-    popular: false,
   },
   {
     name: "Enterprise",
     price: "Custom",
-    description: "Tailored solutions for large universities and multicampus institutes.",
+    description: "University-wide deployment with dedicated infrastructure.",
     features: [
-      "Multi-campus support",
-      "SSO & API access",
-      "White-labeled reporting",
-      "Dedicated account manager",
-      "Custom SLA & training",
-      "On-premise deployment options",
+      "Multi-Campus Hierarchy",
+      "Full SSO (SAML/OIDC)",
+      "Dedicated Account Manager",
+      "On-Premise Deployment Option",
+      "Custom ERP Integrations",
+      "24/7 Phone Support",
     ],
+    notIncluded: [],
     cta: "Contact Sales",
     popular: false,
   },
 ]
 
-const faqs = [
-  {
-    question: "Do you offer discounts for non-profit educational institutions?",
-    answer: "Yes! We offer a 30% discount for registered non-profit institutes. Contact our sales team to verify your status and apply the discount.",
-  },
-  {
-    question: "Can I upgrade or downgrade my plan anytime?",
-    answer: "Absolutely. You can change your plan at any time through the Billing section of your dashboard. Changes will be reflected in your next billing cycle.",
-  },
-  {
-    question: "How safe is my institutional data?",
-    answer: "We use enterprise-grade encryption for all data at rest and in transit. Our infrastructure is hosted on SOC2 compliant data centers with regular security audits.",
-  },
-  {
-    question: "Is there a limit on the number of timetables we can generate?",
-    answer: "No. You can generate and save as many draft versions as you need before finalizing. We want you to find the perfect schedule.",
-  },
-]
-
 export default function PricingPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1">
-        {/* Pricing Header */}
-        <Section className="text-center pt-24 pb-16">
-          <Container variant="narrow">
-            <Badge variant="outline" className="mb-4">Pricing</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Simple Pricing for Colleges & Institutes</h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Choose the perfect plan to streamline your institutional scheduling. 
-              Transparent, scalable, and built for academia.
-            </p>
-          </Container>
-        </Section>
+      
+      <main>
+        <Hero
+          badge="Pricing Plans"
+          title={
+            <>
+              Scale your administrative <span className="text-primary">Efficiency</span>
+            </>
+          }
+          description="Flexible pricing designed to grow with your institution. Choose the tier that matches your department's scale."
+        />
 
-        {/* Pricing Tiers */}
-        <Section>
+        <Section variant="muted">
           <Container>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {pricingTiers.map((tier) => (
-                <Card 
-                  key={tier.name}
-                  className={`flex flex-col relative transition-all duration-300 hover:shadow-lg ${tier.popular ? "border-primary shadow-md lg:-mt-4 lg:mb-4 lg:py-4 scale-105 z-10 bg-primary/5" : "border-muted"}`}
-                >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {tiers.map((tier, i) => (
+                <Card key={i} className={cn(
+                  "relative flex flex-col border-border/50 bg-background/50 backdrop-blur-sm",
+                  tier.popular && "border-primary shadow-2xl shadow-primary/10 scale-105 z-10"
+                )}>
                   {tier.popular && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
-                      <Sparkles className="h-3 w-3" />
-                      Most Popular
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-primary text-primary-foreground px-3 py-1">Most Popular</Badge>
                     </div>
                   )}
                   <CardHeader>
-                    <CardTitle className="text-2xl font-bold">{tier.name}</CardTitle>
-                    <div className="mt-4 flex items-baseline gap-1">
-                      <span className="text-4xl font-extrabold tracking-tight">{tier.price}</span>
-                      {tier.period && <span className="text-muted-foreground text-sm font-medium">{tier.period}</span>}
+                    <CardTitle className="text-xl font-bold">{tier.name}</CardTitle>
+                    <div className="flex items-baseline gap-1 mt-4">
+                      <span className="text-4xl font-bold">{tier.price}</span>
+                      {tier.period && <span className="text-muted-foreground">{tier.period}</span>}
                     </div>
-                    <CardDescription className="pt-4 min-h-[60px] text-sm">
-                      {tier.description}
-                    </CardDescription>
+                    <CardDescription className="pt-2">{tier.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <ul className="space-y-3">
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
-                          <Check className="h-4 w-4 text-primary shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="space-y-4">
+                       <p className="text-sm font-bold text-foreground">What's included:</p>
+                       <ul className="space-y-3">
+                         {tier.features.map((feat, j) => (
+                           <li key={j} className="flex items-center gap-3 text-sm">
+                             <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                             <span>{feat}</span>
+                           </li>
+                         ))}
+                         {tier.notIncluded.map((feat, j) => (
+                           <li key={j} className="flex items-center gap-3 text-sm text-muted-foreground/50">
+                             <XCircle className="h-4 w-4 shrink-0" />
+                             <span className="line-through">{feat}</span>
+                           </li>
+                         ))}
+                       </ul>
+                    </div>
                   </CardContent>
-                  <CardFooter className="pt-4">
-                    <Button variant={tier.popular ? "default" : "outline"} className="w-full h-12 text-sm font-bold rounded-full">
-                      {tier.cta}
+                  <CardFooter>
+                    <Button 
+                      className="w-full rounded-full font-bold" 
+                      variant={tier.popular ? "default" : "outline"}
+                      asChild
+                    >
+                       <Link href="/register">{tier.cta}</Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -180,99 +148,37 @@ export default function PricingPage() {
           </Container>
         </Section>
 
-        {/* Comparison Table */}
-        <Section variant="muted">
-          <Container>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Detailed Plan Comparison</h2>
-              <p className="text-muted-foreground">Find the exact features you need for your institute.</p>
-            </div>
-            <div className="rounded-xl border bg-background overflow-hidden shadow-sm">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="w-[300px]">Features</TableHead>
-                    <TableHead className="text-center">Free</TableHead>
-                    <TableHead className="text-center font-bold text-primary">Standard</TableHead>
-                    <TableHead className="text-center">Pro</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">AI Syllabus parsing</TableCell>
-                    <TableCell className="text-center"><Minus className="h-4 w-4 mx-auto text-muted-foreground" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Faculty unavailibility sync</TableCell>
-                    <TableCell className="text-center"><Minus className="h-4 w-4 mx-auto text-muted-foreground" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Distance optimization</TableCell>
-                    <TableCell className="text-center"><Minus className="h-4 w-4 mx-auto text-muted-foreground" /></TableCell>
-                    <TableCell className="text-center"><Minus className="h-4 w-4 mx-auto text-muted-foreground" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Classroom sharing</TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                    <TableCell className="text-center"><Check className="h-4 w-4 mx-auto text-primary" /></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Support response time</TableCell>
-                    <TableCell className="text-center text-sm">48h</TableCell>
-                    <TableCell className="text-center text-sm font-bold text-primary">24h</TableCell>
-                    <TableCell className="text-center text-sm">Priority</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </Container>
+        {/* FAQ - Quick view */}
+        <Section>
+           <Container variant="narrow">
+              <h2 className="text-3xl font-bold text-center mb-12">Pricing FAQ</h2>
+              <div className="grid gap-6">
+                 {[
+                   { q: "Can I switch plans anytime?", a: "Yes, you can upgrade or downgrade your plan at any point. Changes take effect on the next billing cycle." },
+                   { q: "Do you offer educational discounts?", a: "The 'Starter' plan is free forever for small departments. For NGO-run universities, contact sales for a 30% discount." },
+                   { q: "What constitutes a 'Department'?", a: "A department is defined as a unified scheduling scope (e.g., Computer Science) with up to 20 faculty members." }
+                 ].map((item, i) => (
+                   <div key={i} className="p-6 rounded-xl border border-border/50 bg-muted/20">
+                      <h4 className="font-bold mb-2">{item.q}</h4>
+                      <p className="text-sm text-muted-foreground">{item.a}</p>
+                   </div>
+                 ))}
+              </div>
+           </Container>
         </Section>
 
-        {/* FAQ Section */}
-        <Section>
-          <Container variant="narrow">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Everything you need to know about our pricing and services.
-              </p>
-            </div>
-            <Accordion className="w-full space-y-2">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`faq-${index}`} className="border rounded-lg px-4 hover:bg-muted/50 transition-colors">
-                  <AccordionTrigger className="hover:no-underline font-medium py-5">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-5 text-muted-foreground leading-relaxed">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <div className="mt-12 p-6 rounded-xl border border-primary/20 bg-primary/5 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                 <div className="p-3 bg-primary/10 rounded-full text-primary">
-                    <HelpCircle className="h-6 w-6" />
-                 </div>
-                 <div>
-                    <h4 className="font-bold">Still have questions?</h4>
-                    <p className="text-sm text-muted-foreground">We're here to help you choose the right plan.</p>
-                 </div>
-              </div>
-              <Button variant="link" className="text-primary font-bold">
-                 Contact our support team &rarr;
-              </Button>
-            </div>
-          </Container>
-        </Section>
+        <CTA 
+          title="Ready to automate your institution?"
+          description="Start with our free plan and upgrade as your department grows."
+          ctaText="Get Started for Free"
+        />
       </main>
+
       <Footer />
     </div>
   )
+}
+
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(" ")
 }
