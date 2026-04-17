@@ -31,6 +31,27 @@ const LLM_CONFIGS: LLMConfig[] = [
         apiKey: process.env.OPENROUTER_API_KEY || '',
         maxRetries: 3,
     },
+    {
+        name: 'mistral',
+        model: 'mistralai/mistral-7b-instruct:free',
+        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+        maxRetries: 2,
+    },
+    {
+        name: 'phi',
+        model: 'microsoft/phi-3-medium-128k-instruct:free',
+        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+        maxRetries: 2,
+    },
+    {
+        name: 'gemma',
+        model: 'google/gemma-2-9b-it:free',
+        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+        maxRetries: 2,
+    },
 ];
 
 const EXTRACTION_PROMPT = `You are an academic timetable-intelligence agent.
