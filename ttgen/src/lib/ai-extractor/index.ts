@@ -294,25 +294,9 @@ export async function extractSubjectsFromText(text: string): Promise<ExtractedSu
         }
     }
     
-    // Try Gemini as a major fallback if key is available
-    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key') {
-        try {
-            console.log("Trying extraction with Gemini fallback...");
-            const subjects = await extractWithGeminiDirect(text);
-            console.log(`Successfully extracted ${subjects.length} subjects using Gemini fallback`);
-            return subjects;
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            errors.push(`gemini-fallback: ${errorMessage}`);
-            console.error("Extraction failed with Gemini fallback:", errorMessage);
-        }
-    } else {
-        errors.push("gemini-fallback: API key not configured");
-    }
-
     // If all LLMs failed, throw comprehensive error with helpful configuration advice
     const combinedErrors = errors.join('\n');
-    let helpfulAdvice = "\n\nTip: Please check your OPENROUTER_API_KEY or GEMINI_API_KEY in .env.local (or your deployment environment variables). Ensure you have sufficient credits/quota.";
+    let helpfulAdvice = "\n\nTip: Please check your OPENROUTER_API_KEY in .env.local (or your deployment environment variables). Ensure you have sufficient credits/quota.";
     
     if (combinedErrors.includes('401')) {
         helpfulAdvice = "\n\nCRITICAL: One or more providers returned a 401 Unauthorized error. This usually means your API key is invalid, expired, or the account is missing funds.";
@@ -321,43 +305,4 @@ export async function extractSubjectsFromText(text: string): Promise<ExtractedSu
     throw new Error(`Subject extraction failed. We tried multiple free AI models but all attempts were unsuccessful:\n${combinedErrors}${helpfulAdvice}`);
 }
 
-/**
- * Extract subjects using direct Gemini API (fallback)
- */
-export async function extractWithGeminiDirect(text: string): Promise<ExtractedSubject[]> {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        throw new Error('Gemini API key not configured');
-    }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{
-                    text: EXTRACTION_PROMPT + '\n\n' + text.substring(0, 15000),
-                }],
-            }],
-            generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 4000,
-            },
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!content) {
-        throw new Error('Empty response from Gemini');
-    }
-
-    return parseJSONResponse(content);
-}
