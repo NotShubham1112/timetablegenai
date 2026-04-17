@@ -293,9 +293,32 @@ export async function extractSubjectsFromText(text: string): Promise<ExtractedSu
             console.error(`Extraction failed with ${config.name}:`, errorMessage);
         }
     }
+    
+    // Try Gemini as a major fallback if key is available
+    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key') {
+        try {
+            console.log("Trying extraction with Gemini fallback...");
+            const subjects = await extractWithGeminiDirect(text);
+            console.log(`Successfully extracted ${subjects.length} subjects using Gemini fallback`);
+            return subjects;
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            errors.push(`gemini-fallback: ${errorMessage}`);
+            console.error("Extraction failed with Gemini fallback:", errorMessage);
+        }
+    } else {
+        errors.push("gemini-fallback: API key not configured");
+    }
 
-    // If all LLMs failed, throw comprehensive error
-    throw new Error(`All LLM extraction attempts failed:\n${errors.join('\n')}`);
+    // If all LLMs failed, throw comprehensive error with helpful configuration advice
+    const combinedErrors = errors.join('\n');
+    let helpfulAdvice = "\n\nTip: Please check your OPENROUTER_API_KEY or GEMINI_API_KEY in .env.local (or your deployment environment variables). Ensure you have sufficient credits/quota.";
+    
+    if (combinedErrors.includes('401')) {
+        helpfulAdvice = "\n\nCRITICAL: One or more providers returned a 401 Unauthorized error. This usually means your API key is invalid, expired, or the account is missing funds.";
+    }
+
+    throw new Error(`Subject extraction failed. We tried multiple free AI models but all attempts were unsuccessful:\n${combinedErrors}${helpfulAdvice}`);
 }
 
 /**
