@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
             <div className="prose prose-invert prose-primary max-w-none space-y-12 leading-relaxed text-muted-foreground">
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">1. Information We Collect</h2>
-                  <p>TimetablePro collects both institutional and personal information necessary to provide our scheduling services. This includes institutional data (curriculums, room lists, faculty names) and personal identifiers for registered administrators.</p>
+                  <p>Slotify collects both institutional and personal information necessary to provide our scheduling services. This includes institutional data (curriculums, room lists, faculty names) and personal identifiers for registered administrators.</p>
                </section>
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">2. How We Use Data</h2>

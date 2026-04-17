@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,6 +27,8 @@ import { Play, Loader2, Check, AlertCircle, ArrowRight } from 'lucide-react';
 
 const generateSchema = z.object({
   semester_id: z.string().min(1, 'Semester is required'),
+  start_time: z.string().min(1, 'Start time is required'),
+  end_time: z.string().min(1, 'End time is required'),
 });
 
 type GenerateForm = z.infer<typeof generateSchema>;
@@ -42,12 +45,19 @@ export default function GeneratePage() {
     handleSubmit,
     setValue,
     watch,
+    register,
     formState: { errors },
   } = useForm<GenerateForm>({
     resolver: zodResolver(generateSchema),
+    defaultValues: {
+      start_time: '09:00',
+      end_time: '17:00',
+    },
   });
 
   const semesterId = watch('semester_id');
+  const startTime = watch('start_time');
+  const endTime = watch('end_time');
   const selectedSemester = semesters.find((s) => s.id === semesterId);
 
   async function onSubmit(data: GenerateForm) {
@@ -64,8 +74,8 @@ export default function GeneratePage() {
           college_id: college.id,
           semester_id: data.semester_id,
           working_days: [1, 2, 3, 4, 5],
-          start_time: '09:00',
-          end_time: '17:00',
+          start_time: data.start_time,
+          end_time: data.end_time,
           slot_duration_minutes: 60,
         }),
       });
@@ -131,6 +141,23 @@ export default function GeneratePage() {
                 )}
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label>Start Time</Label>
+                  <Input type="time" {...register('start_time')} />
+                  {errors.start_time && (
+                    <p className="text-sm text-destructive">{errors.start_time.message}</p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label>End Time</Label>
+                  <Input type="time" {...register('end_time')} />
+                  {errors.end_time && (
+                    <p className="text-sm text-destructive">{errors.end_time.message}</p>
+                  )}
+                </div>
+              </div>
+
               {selectedSemester && (
                 <div className="rounded-lg bg-muted p-4 space-y-2">
                   <p className="text-sm font-medium">Semester Details:</p>
@@ -186,7 +213,7 @@ export default function GeneratePage() {
               <p className="text-sm text-muted-foreground mb-2">Schedule Settings:</p>
               <div className="text-sm space-y-1">
                 <p>Working Days: Monday - Friday</p>
-                <p>Time: 9:00 AM - 5:00 PM</p>
+                <p>Time: {startTime || '09:00'} - {endTime || '17:00'}</p>
                 <p>Lunch Break: 1:00 PM - 2:00 PM</p>
                 <p>Slot Duration: 60 minutes</p>
               </div>

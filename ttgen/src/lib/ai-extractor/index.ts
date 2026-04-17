@@ -109,7 +109,7 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${config.apiKey}`,
         'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-        'X-Title': 'Timetable Generator',
+        'X-Title': 'Slotify',
     };
 
     const body = {

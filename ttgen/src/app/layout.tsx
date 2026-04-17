@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Timetable Generator',
+  title: 'Slotify',
   description: 'AI-powered automatic timetable generator for colleges',
 };
 

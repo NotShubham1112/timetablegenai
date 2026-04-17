@@ -14,7 +14,7 @@ const caseStudies = [
     institution: "Stanford University",
     department: "School of Engineering",
     title: "Optimizing 4,000+ Students Across 80+ Lab Venues",
-    description: "How Stanford Engineering reduced their semester planning time by 75% using TimetablePro's AI Conflict Engine.",
+    description: "How Stanford Engineering reduced their semester planning time by 75% using Slotify's AI Conflict Engine.",
     icon: University,
     metrics: [
       { label: "Plan Time", value: "-75%" },
@@ -62,7 +62,7 @@ export default function CaseStudiesPage() {
                Real impact on <span className="text-primary">Academic Excellence</span>
              </>
            }
-           description="Explore how world-class institutions use TimetablePro to solve their most complex scheduling challenges."
+           description="Explore how world-class institutions use Slotify to solve their most complex scheduling challenges."
         />
 
         <Section variant="muted">

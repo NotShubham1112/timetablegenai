@@ -32,7 +32,7 @@ export function Footer() {
           <div className="col-span-2 lg:col-span-2">
             <Link href="/" className="flex items-center space-x-2">
               <Calendar className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold tracking-tight">TimetablePro</span>
+              <span className="text-xl font-bold tracking-tight">Slotify</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
               Empowering educational institutions with AI-driven automated timetable generation.
@@ -93,7 +93,7 @@ export function Footer() {
 
         <div className="mt-16 pt-8 border-t flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} TimetablePro Inc. All rights reserved. Made for Colleges.
+            © {new Date().getFullYear()} Slotify Inc. All rights reserved. Made for Colleges.
           </p>
           <div className="flex space-x-6">
             <Link href="/legal/privacy-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors">

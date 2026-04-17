@@ -21,7 +21,7 @@ export default function AboutPage() {
                Building the future of <span className="text-primary">Academic Planning</span>
              </>
            }
-           description="Born at an engineering university, TimetablePro is on a mission to modernize educational administration with cutting-edge AI."
+           description="Born at an engineering university, Slotify is on a mission to modernize educational administration with cutting-edge AI."
         />
 
         <Section variant="muted">
@@ -39,7 +39,7 @@ export default function AboutPage() {
                        We believe that administrative friction is the biggest bottleneck to academic innovation. Our tools are designed to remove the complex manual scheduling tasks so that deans, registrars, and faculty can focus on what they do best: teaching and research.
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                       Founded in 2022 by a team of engineering professors and AI researchers, TimetablePro has grown from a local project to a global infrastructure serving hundreds of institutions worldwide.
+                       Founded in 2022 by a team of engineering professors and AI researchers, Slotify has grown from a local project to a global infrastructure serving hundreds of institutions worldwide.
                     </p>
                  </div>
                  <div className="relative">

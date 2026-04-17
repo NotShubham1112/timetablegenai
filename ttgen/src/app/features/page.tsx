@@ -36,7 +36,7 @@ export default function FeaturesPage() {
               Engineered for <span className="text-primary">Academic Excellence</span>
             </>
           }
-          description="Explore the advanced capabilities that make TimetablePro the leading choice for modern university administrative teams."
+          description="Explore the advanced capabilities that make Slotify the leading choice for modern university administrative teams."
           ctaText="Start Free Trial"
         />
 
@@ -66,7 +66,7 @@ export default function FeaturesPage() {
                       <p className="text-muted-foreground leading-relaxed">
                         Our core engine uses a combination of constraints-based logic and genetic algorithms to solve NP-hard scheduling problems in seconds.
                       </p>
-                      <Accordion className="w-full">
+                      <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Multi-Objective Optimization</AccordionTrigger>
                           <AccordionContent>
@@ -103,7 +103,7 @@ export default function FeaturesPage() {
                       <p className="text-muted-foreground leading-relaxed">
                         Efficiently manage every square foot of your campus. From large auditoriums to specialized research labs.
                       </p>
-                      <Accordion className="w-full">
+                      <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Proximity Mapping</AccordionTrigger>
                           <AccordionContent>
@@ -183,7 +183,7 @@ export default function FeaturesPage() {
 
         <CTA 
           title="See these features in action"
-          description="Schedule a customized walkthrough with our product experts and see how TimetablePro fits your department."
+          description="Schedule a customized walkthrough with our product experts and see how Slotify fits your department."
           ctaText="Book a Walkthrough"
           ctaHref="/company/contact"
         />

@@ -22,11 +22,11 @@ export default function TermsOfServicePage() {
             <div className="prose prose-invert prose-primary max-w-none space-y-12 leading-relaxed text-muted-foreground">
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">1. Acceptance of Terms</h2>
-                  <p>By accessing or using TimetablePro, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
+                  <p>By accessing or using Slotify, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
                </section>
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">2. Use License</h2>
-                  <p>Permission is granted to temporarily download one copy of the materials (information or software) on TimetablePro's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.</p>
+                  <p>Permission is granted to temporarily download one copy of the materials (information or software) on Slotify's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.</p>
                   <ul className="list-disc pl-6 space-y-2">
                      <li>Modify or copy the materials;</li>
                      <li>Use the materials for any commercial purpose;</li>
@@ -36,11 +36,11 @@ export default function TermsOfServicePage() {
                </section>
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">3. User Responsibility</h2>
-                  <p>Institutional administrators are responsible for the accuracy of the data uploaded (syllabuses, room capacities, etc.). TimetablePro provides optimization based on provided inputs and does not verify the legal standing of the academic documents.</p>
+                  <p>Institutional administrators are responsible for the accuracy of the data uploaded (syllabuses, room capacities, etc.). Slotify provides optimization based on provided inputs and does not verify the legal standing of the academic documents.</p>
                </section>
                <section className="space-y-4">
                   <h2 className="text-2xl font-bold text-foreground">4. Service Limitations</h2>
-                  <p>While we strive for 100% accuracy, TimetablePro is provided "as is". We do not warrant that the service will be uninterrupted or error-free for every possible institutional constraint.</p>
+                  <p>While we strive for 100% accuracy, Slotify is provided "as is". We do not warrant that the service will be uninterrupted or error-free for every possible institutional constraint.</p>
                </section>
             </div>
           </Container>

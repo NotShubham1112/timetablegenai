@@ -1,5 +1,5 @@
 /**
- * Timetable Generator - Main scheduling engine using CP-SAT
+ * Slotify - Main scheduling engine using CP-SAT
  * Handles theory hours, lab blocks, batch divisions, room constraints
  */
 

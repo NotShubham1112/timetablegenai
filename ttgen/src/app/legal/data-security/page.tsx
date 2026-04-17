@@ -53,10 +53,10 @@ export default function DataSecurityPage() {
            <Container variant="narrow">
               <div className="space-y-12 leading-relaxed text-muted-foreground">
                  <h2 className="text-3xl font-black text-foreground text-center mb-12">Building for the Modern University</h2>
-                 <p>At TimetablePro, we understand that academic data is an institution's most valuable asset. We treat security not as a feature, but as the foundation of our entire infrastructure. Our 'Sovereignty-First' approach means that your university retains full ownership and control over its data archives, with granular visibility into every administrative action.</p>
+                 <p>At Slotify, we understand that academic data is an institution's most valuable asset. We treat security not as a feature, but as the foundation of our entire infrastructure. Our 'Sovereignty-First' approach means that your university retains full ownership and control over its data archives, with granular visibility into every administrative action.</p>
                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-8 space-y-6">
                     <h3 className="font-bold text-foreground text-xl">Incident Response</h3>
-                    <p>In the unlikely event of a security anomaly, TimetablePro has a 24-hour response protocol. Designated institutional security contacts are notified immediately, and our team of engineers works round-the-clock until resolution.</p>
+                    <p>In the unlikely event of a security anomaly, Slotify has a 24-hour response protocol. Designated institutional security contacts are notified immediately, and our team of engineers works round-the-clock until resolution.</p>
                  </div>
               </div>
            </Container>

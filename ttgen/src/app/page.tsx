@@ -62,7 +62,7 @@ export default function LandingPage() {
                     <div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
                       <Sparkles className="h-4 w-4 text-primary-foreground" />
                     </div>
-                    <span className="hidden sm:inline text-sm font-bold tracking-tight">TimetablePro</span>
+                    <span className="hidden sm:inline text-sm font-bold tracking-tight">Slotify</span>
                   </div>
                   <div className="flex flex-col gap-1">
                     {[
@@ -280,7 +280,7 @@ export default function LandingPage() {
                       ))}
                     </div>
                     <p className="text-xl italic leading-relaxed text-foreground">
-                      "TimetablePro reduced our semester planning time from 3 weeks to just 2 hours. The AI parsing for syllabus PDFs is truly magical."
+                      "Slotify reduced our semester planning time from 3 weeks to just 2 hours. The AI parsing for syllabus PDFs is truly magical."
                     </p>
                     <div className="flex items-center gap-4">
                        <div className="h-12 w-12 rounded-full bg-primary/20" />
@@ -299,7 +299,7 @@ export default function LandingPage() {
                       ))}
                     </div>
                     <p className="text-xl italic leading-relaxed text-foreground">
-                      "Handling lab allocations for 1500 students used to be a nightmare. TimetablePro solved it with zero conflicts on the first try."
+                      "Handling lab allocations for 1500 students used to be a nightmare. Slotify solved it with zero conflicts on the first try."
                     </p>
                     <div className="flex items-center gap-4">
                        <div className="h-12 w-12 rounded-full bg-zinc-800" />
@@ -336,7 +336,7 @@ export default function LandingPage() {
         {/* Final CTA */}
         <CTA 
           title="Ready to automate your institution?"
-          description="Join 500+ colleges using TimetablePro to reclaim their time and eliminate scheduling stress."
+          description="Join 500+ colleges using Slotify to reclaim their time and eliminate scheduling stress."
           ctaText="Generate Your Free Timetable"
         />
       </main>

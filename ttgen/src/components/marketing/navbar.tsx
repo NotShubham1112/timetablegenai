@@ -70,7 +70,7 @@ export function Navbar() {
               <Sparkles className="h-6 w-6 text-primary transition-transform duration-500 group-hover:rotate-12" />
               <div className="absolute inset-0 bg-primary blur-lg opacity-20"></div>
             </div>
-            <span className="text-xl font-bold tracking-tight">TimetablePro</span>
+            <span className="text-xl font-bold tracking-tight">Slotify</span>
           </Link>
 
           <div className="hidden md:flex">
@@ -78,16 +78,15 @@ export function Navbar() {
               <NavigationMenuList>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.href}>
-                    <Link href={link.href} legacyBehavior passHref>
-                      <NavigationMenuLink 
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          pathname === link.href && "bg-accent text-accent-foreground"
-                        )}
-                      >
-                        {link.name}
-                      </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuLink
+                      href={link.href}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        pathname === link.href && "bg-accent text-accent-foreground"
+                      )}
+                    >
+                      {link.name}
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 ))}
                 <NavigationMenuItem>
@@ -140,7 +139,7 @@ export function Navbar() {
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-primary" />
-                  TimetablePro
+                  Slotify
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col space-y-4 mt-8">
@@ -192,21 +191,18 @@ export function Navbar() {
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & { icon?: React.ElementType }
->(({ className, title, children, icon: Icon, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<"a"> & { title?: string; icon?: React.ElementType }
+>(({ className, title, children, icon: Icon, href, ...props }, ref) => {
   return (
     <li>
       <NavigationMenuLink
-        render={
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          />
-        }
+        ref={ref}
+        href={href}
+        className={cn(
+          "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+          className
+        )}
+        {...props}
       >
         <div className="flex items-center gap-2">
           {Icon && <Icon className="h-4 w-4 text-primary/80" />}

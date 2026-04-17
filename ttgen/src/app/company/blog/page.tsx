@@ -14,7 +14,7 @@ const blogPosts = [
   {
     slug: "ai-in-academia-scheduling",
     title: "How AI is Solving the NP-Hard Problem of University Scheduling",
-    description: "Deep dive into the genetics algorithms behind TimetablePro's core engine and how we resolve millions of conflict points.",
+    description: "Deep dive into the genetics algorithms behind Slotify's core engine and how we resolve millions of conflict points.",
     category: "Deep Tech",
     date: "Mar 28, 2024",
     author: "Dr. Elena Rossi",

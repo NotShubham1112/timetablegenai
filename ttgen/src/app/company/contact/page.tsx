@@ -24,7 +24,7 @@ export default function ContactPage() {
                Let's talk about <span className="text-primary">Academic Innovation</span>
              </>
            }
-           description="Have questions about TimetablePro? Our academic infrastructure experts are ready to help."
+           description="Have questions about Slotify? Our academic infrastructure experts are ready to help."
         />
 
         <Section variant="muted">

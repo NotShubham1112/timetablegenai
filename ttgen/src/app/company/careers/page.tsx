@@ -33,7 +33,7 @@ const jobs = [
     department: "Operations",
     location: "New York / Hybrid",
     type: "Full-time",
-    description: "Help university registrars successfully implement TimetablePro.",
+    description: "Help university registrars successfully implement Slotify.",
     featured: false,
   },
   {
@@ -67,7 +67,7 @@ export default function CareersPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center mb-24">
                  {[
                    { title: "Remote-First", desc: "Work from anywhere in the world with flexible hours." },
-                   { title: "Generous Equity", desc: "Every TimetablePro team member is an owner." },
+                   { title: "Generous Equity", desc: "Every Slotify team member is an owner." },
                    { title: "Health & Wellness", desc: "Comprehensive insurance and wellness stipends." },
                    { title: "Learning Fund", desc: "Yearly budget for books, courses, and conferences." }
                  ].map((perk, i) => (

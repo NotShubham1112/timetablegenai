@@ -14,7 +14,7 @@ const reviews = [
     author: "Dr. Robert Chen",
     role: "Department Head",
     institution: "IIT Delhi",
-    content: "The syllabus AI is a game-changer. We used to spend weeks manually counting credits and contact hours. TimetablePro does it in seconds with perfect accuracy.",
+    content: "The syllabus AI is a game-changer. We used to spend weeks manually counting credits and contact hours. Slotify does it in seconds with perfect accuracy.",
     rating: 5,
     featured: true,
   },
@@ -22,7 +22,7 @@ const reviews = [
     author: "Sarah Jenkins",
     role: "Academic Registrar",
     institution: "University of Manchester",
-    content: "Scheduling for 5,000+ students across multiple buildings was always a nightmare. The conflict resolution engine in TimetablePro is the best we've ever used.",
+    content: "Scheduling for 5,000+ students across multiple buildings was always a nightmare. The conflict resolution engine in Slotify is the best we've ever used.",
     rating: 5,
     featured: false,
   },
@@ -30,7 +30,7 @@ const reviews = [
     author: "Prof. Maria Garcia",
     role: "Dean of Faculty",
     institution: "Technological University of Madrid",
-    content: "TimetablePro respects our faculty preferences while ensuring zero overlaps. Our professor satisfaction scores have increased by 40% since implementation.",
+    content: "Slotify respects our faculty preferences while ensuring zero overlaps. Our professor satisfaction scores have increased by 40% since implementation.",
     rating: 5,
     featured: false,
   },
@@ -38,7 +38,7 @@ const reviews = [
     author: "James Wilson",
     role: "IT Director",
     institution: "Sydney Institute of Technology",
-    content: "The API-first approach allowed us to integrate TimetablePro with our existing ERP in less than a week. Highly recommended for large scale institutions.",
+    content: "The API-first approach allowed us to integrate Slotify with our existing ERP in less than a week. Highly recommended for large scale institutions.",
     rating: 5,
     featured: true,
   },
@@ -46,7 +46,7 @@ const reviews = [
     author: "Linda Thompson",
     role: "Scheduling Coordinator",
     institution: "Toronto Metro University",
-    content: "We've tried every legacy scheduling software on the market. TimetablePro is the only one that actually understands how modern universities operate.",
+    content: "We've tried every legacy scheduling software on the market. Slotify is the only one that actually understands how modern universities operate.",
     rating: 5,
     featured: false,
   },
@@ -65,7 +65,7 @@ export default function ReviewsPage() {
               Trusted by <span className="text-primary">Academic Leaders</span>
             </>
           }
-          description="See how institutions around the world are transforming their administrative workflows with TimetablePro."
+          description="See how institutions around the world are transforming their administrative workflows with Slotify."
         />
 
         <Section variant="muted">
