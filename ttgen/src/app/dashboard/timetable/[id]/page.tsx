@@ -62,11 +62,16 @@ export default function TimetablePage() {
     slotsByDay[Number(day)].sort((a, b) => a.start_time.localeCompare(b.start_time));
   }
 
-  // Organize slots by day and time for weekly view
+  // Organise slots by day and time for weekly view
+  const timeSlots = Array.from(new Set(slots.map(s => s.start_time.substring(0, 5)))).sort();
+  
+  // Use config times if available, or fall back to defaults
+  const displayTimeSlots = timeSlots.length > 0 ? timeSlots : TIME_SLOTS;
+
   const weeklyGrid: Record<string, Record<string, TimetableSlot | null>> = {};
   for (const day of DAYS.slice(0, 5)) {
     weeklyGrid[day] = {};
-    for (const time of TIME_SLOTS) {
+    for (const time of displayTimeSlots) {
       weeklyGrid[day][time] = null;
     }
   }
@@ -74,7 +79,7 @@ export default function TimetablePage() {
   for (const slot of slots) {
     const day = DAYS[slot.day_of_week - 1];
     const time = slot.start_time.substring(0, 5);
-    if (weeklyGrid[day] && weeklyGrid[day][time] === null) {
+    if (weeklyGrid[day] && time in weeklyGrid[day]) {
       weeklyGrid[day][time] = slot;
     }
   }
@@ -165,7 +170,7 @@ export default function TimetablePage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {TIME_SLOTS.map((time) => (
+                      {displayTimeSlots.map((time) => (
                         <TableRow key={time}>
                           <TableCell className="font-medium">{time}</TableCell>
                           {DAYS.slice(0, 5).map((day) => {
@@ -173,28 +178,34 @@ export default function TimetablePage() {
                             if (time === '13:00') {
                               return (
                                 <TableCell key={`${day}-${time}`} className="bg-muted/50">
-                                  <span className="text-xs text-muted-foreground">LUNCH</span>
+                                  <span className="text-xs text-muted-foreground uppercase tracking-widest text-center block">Break</span>
                                 </TableCell>
                               );
                             }
                             return (
-                              <TableCell key={`${day}-${time}`} className="p-2">
+                              <TableCell key={`${day}-${time}`} className="p-2 h-20">
                                 {slot ? (
-                                  <div className={`p-2 rounded text-xs ${
+                                  <div className={`p-2 rounded text-xs h-full flex flex-col justify-between ${
                                     slot.slot_type === 'lab'
-                                      ? 'bg-primary/10 border border-primary/20'
-                                      : 'bg-secondary'
+                                      ? 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-700 dark:text-indigo-300'
+                                      : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                                   }`}>
-                                    <p className="font-semibold truncate">{slot.subject?.code}</p>
-                                    <p className="truncate">{slot.subject?.name}</p>
-                                    {slot.faculty && (
-                                      <p className="text-muted-foreground truncate">{slot.faculty.name}</p>
-                                    )}
-                                    <p className="text-muted-foreground truncate">
-                                      {slot.classroom?.name || slot.lab?.name}
-                                    </p>
+                                    <div className="space-y-0.5">
+                                      <p className="font-bold uppercase">{slot.subject?.code}</p>
+                                      <p className="line-clamp-1 opacity-90">{slot.subject?.name}</p>
+                                    </div>
+                                    <div className="mt-auto pt-1 border-t border-current/10 opacity-80 text-[10px]">
+                                      {slot.faculty && (
+                                        <p className="truncate font-medium">{slot.faculty.name}</p>
+                                      )}
+                                      <p className="truncate">
+                                        {slot.classroom?.name || slot.lab?.name || 'No Room'}
+                                      </p>
+                                    </div>
                                   </div>
-                                ) : null}
+                                ) : (
+                                  <div className="h-full w-full rounded border border-dashed border-muted-foreground/10" />
+                                )}
                               </TableCell>
                             );
                           })}

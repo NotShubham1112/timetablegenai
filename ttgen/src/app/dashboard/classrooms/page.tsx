@@ -40,6 +40,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useCollege } from '@/hooks/useCollege';
 import { useClassrooms } from '@/hooks/useClassrooms';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { MoreHorizontal, Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 
 const classroomSchema = z.object({
@@ -71,7 +72,8 @@ export default function ClassroomsPage() {
     if (!college) return;
 
     try {
-      await createClassroom({
+      console.log('Attempting to create classroom:', data);
+      const result = await createClassroom({
         college_id: college.id,
         name: data.name,
         code: data.code,
@@ -82,18 +84,20 @@ export default function ClassroomsPage() {
         has_ac: false,
         is_active: true,
       });
+      console.log('Classroom creation successful:', result);
 
       toast({
         title: 'Success',
-        description: 'Classroom created successfully',
+        description: `Classroom "${data.name}" created successfully`,
       });
 
       setIsDialogOpen(false);
       reset();
     } catch (error) {
+      console.error('Error creating classroom:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create classroom',
+        title: 'Error Creating Classroom',
+        description: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
         variant: 'destructive',
       });
     }
@@ -179,61 +183,66 @@ export default function ClassroomsPage() {
         </Dialog>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Building</TableHead>
-                <TableHead>Floor</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
+      <Card className="overflow-hidden">
+        <ScrollArea className="h-[calc(100vh-300px)]">
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader className="sticky top-0 bg-background z-10">
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    Loading...
-                  </TableCell>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Building</TableHead>
+                  <TableHead>Floor</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
-              ) : classrooms.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    No classrooms found. Add your first classroom above.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                classrooms.map((classroom) => (
-                  <TableRow key={classroom.id}>
-                    <TableCell className="font-medium">{classroom.code}</TableCell>
-                    <TableCell>{classroom.name}</TableCell>
-                    <TableCell>{classroom.building || '-'}</TableCell>
-                    <TableCell>{classroom.floor || '-'}</TableCell>
-                    <TableCell>{classroom.capacity}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(classroom.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Loading classrooms...
+                      </div>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
+                ) : classrooms.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      No classrooms found. Add your first classroom above (ensure unique codes).
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  classrooms.map((classroom) => (
+                    <TableRow key={classroom.id}>
+                      <TableCell className="font-medium">{classroom.code}</TableCell>
+                      <TableCell>{classroom.name}</TableCell>
+                      <TableCell>{classroom.building || '-'}</TableCell>
+                      <TableCell>{classroom.floor || '-'}</TableCell>
+                      <TableCell>{classroom.capacity}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(classroom.id)}>
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </ScrollArea>
       </Card>
     </div>
   );

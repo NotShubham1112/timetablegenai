@@ -125,44 +125,52 @@ export class TimetableGenerator {
 
         // Schedule theory subjects first
         for (const subject of theorySubjects) {
-            const subjectAssignments = this.scheduleTheorySubject(
+            const result = this.scheduleTheorySubject(
                 subject,
-                assignments,
-                facultyHours,
-                roomOccupancy
-            );
-
-            if (subjectAssignments.length === 0) {
-                unassigned.push(subject.id);
-                conflicts.push({
-                    type: 'subject',
-                    description: `Could not schedule theory subject: ${subject.name} (${subject.code})`,
-                    assignments: [],
-                });
-            } else {
-                assignments.push(...subjectAssignments);
-            }
-        }
-
-        // Schedule lab subjects
-        for (const subject of labSubjects) {
-            const subjectAssignments = this.scheduleLabSubject(
-                subject,
-                assignments,
+                [...assignments],
                 facultyHours,
                 roomOccupancy,
                 batchOccupancy
             );
 
-            if (subjectAssignments.length === 0) {
+            if (result.assignments.length === 0) {
                 unassigned.push(subject.id);
                 conflicts.push({
                     type: 'subject',
-                    description: `Could not schedule lab subject: ${subject.name} (${subject.code})`,
+                    description: `Could not schedule theory subject: ${subject.name} (${subject.code}). Reason: ${result.reason || "No available rooms or faculty time."}`,
                     assignments: [],
                 });
             } else {
-                assignments.push(...subjectAssignments);
+                assignments.push(...result.assignments);
+                if (result.assignments.length < (subject.hoursPerWeek * (60 / this.config.theorySlotDuration))) {
+                    conflicts.push({
+                        type: 'subject',
+                        description: `Partially scheduled theory subject: ${subject.name} (${subject.code}). Scheduled ${result.assignments.length} slots.`,
+                        assignments: result.assignments,
+                    });
+                }
+            }
+        }
+
+        // Schedule lab subjects
+        for (const subject of labSubjects) {
+            const result = this.scheduleLabSubject(
+                subject,
+                [...assignments],
+                facultyHours,
+                roomOccupancy,
+                batchOccupancy
+            );
+
+            if (result.assignments.length === 0) {
+                unassigned.push(subject.id);
+                conflicts.push({
+                    type: 'subject',
+                    description: `Could not schedule lab subject: ${subject.name} (${subject.code}). Reason: ${result.reason || "No available labs or batches."}`,
+                    assignments: [],
+                });
+            } else {
+                assignments.push(...result.assignments);
             }
         }
 
@@ -182,22 +190,23 @@ export class TimetableGenerator {
         };
     }
 
-    /**
-     * Schedule a theory subject
-     */
     private scheduleTheorySubject(
         subject: SubjectRequirement,
-        existingAssignments: Assignment[],
+        existingTotalAssignments: Assignment[],
         facultyHours: Record<string, number>,
-        roomOccupancy: Set<string>
-    ): Assignment[] {
+        roomOccupancy: Set<string>,
+        batchOccupancy: Set<string>
+    ): { assignments: Assignment[]; reason?: string } {
         const assignments: Assignment[] = [];
         const hoursNeeded = subject.hoursPerWeek;
         let hoursScheduled = 0;
+        let failureReason = "";
 
         // Get available rooms (theory rooms)
         const availableRooms = this.context.rooms.filter(r => r.type === 'theory');
-        if (availableRooms.length === 0) return [];
+        if (availableRooms.length === 0) return { assignments: [], reason: "No theory rooms defined." };
+
+        const batchIds = subject.batchIds || ['default'];
 
         // Try each faculty member
         for (const facultyId of subject.facultyIds) {
@@ -208,7 +217,10 @@ export class TimetableGenerator {
 
             // Check faculty availability
             const facultyCurrentHours = facultyHours[facultyId] || 0;
-            if (facultyCurrentHours >= faculty.maxHoursPerWeek) continue;
+            if (facultyCurrentHours >= faculty.maxHoursPerWeek) {
+                failureReason = `Faculty ${faculty.name} at max hours limit.`;
+                continue;
+            }
 
             // Try each time slot
             for (const slot of this.timeSlots) {
@@ -216,23 +228,36 @@ export class TimetableGenerator {
 
                 const slotKey = `${slot.day}-${slot.startHour}:${slot.startMinute}`;
 
+                // Check faculty availability at this slot (across ALL assignments)
+                if (this.isFacultyBusy(facultyId, slot, [...existingTotalAssignments, ...assignments])) continue;
+
+                // Check batch availability
+                let batchBusy = false;
+                for (const bid of batchIds) {
+                    if (batchOccupancy.has(`${bid}-${slotKey}`)) {
+                        batchBusy = true;
+                        break;
+                    }
+                }
+                if (batchBusy) continue;
+
                 // Find available room
                 const room = availableRooms.find(r => {
                     const roomSlotKey = `${r.id}-${slotKey}`;
                     return !roomOccupancy.has(roomSlotKey);
                 });
 
-                if (!room) continue;
-
-                // Check faculty availability at this slot
-                const facultySlotKey = `${facultyId}-${slotKey}`;
-                if (this.isFacultyBusy(facultyId, slot, existingAssignments)) continue;
+                if (!room) {
+                    failureReason = "No available theory rooms in specific slots.";
+                    continue;
+                }
 
                 // Create assignment
                 const assignment: Assignment = {
                     subjectId: subject.id,
                     roomId: room.id,
                     facultyId,
+                    batchId: batchIds.length === 1 ? batchIds[0] : undefined,
                     timeSlot: slot,
                     weekSlot: this.getWeekSlotIndex(slot),
                 };
@@ -243,32 +268,43 @@ export class TimetableGenerator {
                 // Mark resources as used
                 roomOccupancy.add(`${room.id}-${slotKey}`);
                 facultyHours[facultyId] = facultyCurrentHours + (slot.duration / 60);
+                
+                // Mark batches as busy
+                for (const bid of batchIds) {
+                    batchOccupancy.add(`${bid}-${slotKey}`);
+                }
             }
         }
 
-        return hoursScheduled >= hoursNeeded ? assignments : [];
+        return { 
+            assignments, 
+            reason: hoursScheduled < hoursNeeded ? (failureReason || "Insufficient free slots.") : undefined 
+        };
     }
 
-    /**
-     * Schedule a lab subject
-     */
     private scheduleLabSubject(
         subject: SubjectRequirement,
-        existingAssignments: Assignment[],
+        existingTotalAssignments: Assignment[],
         facultyHours: Record<string, number>,
         roomOccupancy: Set<string>,
         batchOccupancy: Set<string>
-    ): Assignment[] {
+    ): { assignments: Assignment[]; reason?: string } {
         const assignments: Assignment[] = [];
         const hoursNeeded = subject.hoursPerWeek;
         const batchIds = subject.batchIds || ['default'];
+        let failureReason = "";
 
         // Get available labs matching lab type
-        const availableLabs = this.context.rooms.filter(r =>
+        let availableLabs = this.context.rooms.filter(r =>
             r.type === 'lab' && (!subject.labType || r.labType === subject.labType)
         );
 
-        if (availableLabs.length === 0) return [];
+        // Fallback: search for any lab if no specific type lab found
+        if (availableLabs.length === 0) {
+            availableLabs = this.context.rooms.filter(r => r.type === 'lab');
+        }
+
+        if (availableLabs.length === 0) return { assignments: [], reason: "No labs available." };
 
         // Schedule each batch separately
         for (const batchId of batchIds) {
@@ -281,7 +317,10 @@ export class TimetableGenerator {
                 if (!faculty) continue;
 
                 const facultyCurrentHours = facultyHours[facultyId] || 0;
-                if (facultyCurrentHours >= faculty.maxHoursPerWeek) continue;
+                if (facultyCurrentHours >= faculty.maxHoursPerWeek) {
+                    failureReason = `Faculty ${faculty.name} at max hours limit.`;
+                    continue;
+                }
 
                 // Lab slots are typically 2 hours
                 const labDuration = this.config.labSlotDuration;
@@ -295,6 +334,10 @@ export class TimetableGenerator {
 
                     // Check if slots are consecutive and on same day
                     if (startSlot.day !== endSlot.day) continue;
+                    
+                    // Simple check for gaps (should be contiguous in our timeSlots array)
+                    const actualGap = (endSlot.startHour * 60 + endSlot.startMinute) - (startSlot.startHour * 60 + startSlot.startMinute);
+                    if (actualGap > (consecutiveSlotsNeeded - 1) * this.config.theorySlotDuration) continue;
 
                     const slotKey = `${startSlot.day}-${startSlot.startHour}:${startSlot.startMinute}`;
 
@@ -308,8 +351,12 @@ export class TimetableGenerator {
                         return !roomOccupancy.has(labSlotKey);
                     });
 
-                    if (!lab) continue;
-                    if (this.isFacultyBusy(facultyId, startSlot, existingAssignments)) continue;
+                    if (!lab) {
+                        failureReason = "No available specific labs in the requested time.";
+                        continue;
+                    }
+                    
+                    if (this.isFacultyBusy(facultyId, startSlot, [...existingTotalAssignments, ...assignments])) continue;
 
                     // Create lab assignment
                     const assignment: Assignment = {
@@ -332,13 +379,16 @@ export class TimetableGenerator {
                     batchOccupancy.add(batchSlotKey);
                     facultyHours[facultyId] = facultyCurrentHours + (labDuration / 60);
 
-                    // Skip the used slots
+                    // Skip the used slots in the iteration
                     i += consecutiveSlotsNeeded - 1;
                 }
             }
         }
 
-        return assignments;
+        return { 
+            assignments, 
+            reason: assignments.length === 0 ? (failureReason || "Could not find contiguous lab slots.") : undefined 
+        };
     }
 
     /**

@@ -165,16 +165,23 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        const schedulerSubjects: SubjectRequirement[] = subjects.map(s => ({
-            id: s.id,
-            code: s.code,
-            name: s.name,
-            type: s.type === 'lab' ? 'lab' : 'theory',
-            hoursPerWeek: s.hours_per_week,
-            labType: s.lab_type || undefined,
-            batchIds: s.requires_batches ? schedulerBatches.map(b => b.id) : undefined,
-            facultyIds: schedulerFaculty.map(f => f.id), // For now, allow any faculty
-        }));
+        const schedulerSubjects: SubjectRequirement[] = subjects.map(s => {
+            // Pick a reasonable faculty pool for this subject
+            // If the database had faculty_subject mappings, we'd use those.
+            // Shuffling the entire faculty list ensures we don't always pick the first one.
+            const shuffledFaculty = [...schedulerFaculty].sort(() => Math.random() - 0.5);
+            
+            return {
+                id: s.id,
+                code: s.code,
+                name: s.name,
+                type: s.type === 'lab' ? 'lab' : 'theory',
+                hoursPerWeek: Number(s.hours_per_week) || 4,
+                labType: s.lab_type || undefined,
+                batchIds: s.requires_batches ? schedulerBatches.map(b => b.id) : [schedulerBatches[0].id],
+                facultyIds: shuffledFaculty.map(f => f.id), 
+            };
+        });
 
         // Prepare context
         const context: Omit<ScheduleContext, 'timeSlots' | 'config'> = {
