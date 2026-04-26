@@ -21,30 +21,30 @@ interface LLMConfig {
  */
 const OPENROUTER_CONFIGS: LLMConfig[] = [
     {
-        // Gemma 3 27B — very capable, handles structured JSON well
-        name: 'gemma-3-27b',
-        model: 'google/gemma-3-27b-it:free',
-        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: process.env.OPENROUTER_API_KEY || '',
-        maxRetries: 3,
-        skipOn429: true,
-    },
-    {
-        // Mistral 7B — lightweight but reliable JSON emitter
-        name: 'mistral-7b',
-        model: 'mistralai/mistral-7b-instruct:free',
+        // Gemma 4 26B — Latest Google model, very capable
+        name: 'gemma-4-26b',
+        model: 'google/gemma-4-26b-a4b-it:free',
         apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
         apiKey: process.env.OPENROUTER_API_KEY || '',
         maxRetries: 2,
         skipOn429: true,
     },
     {
-        // DeepSeek R1 distill — good reasoning, solid fallback
-        name: 'deepseek-r1-8b',
-        model: 'deepseek/deepseek-r1-distill-llama-8b:free',
+        // Nemotron 3 Super 120B — NVIDIA's massive free model
+        name: 'nemotron-3-super',
+        model: 'nvidia/nemotron-3-super-120b-a12b:free',
         apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
         apiKey: process.env.OPENROUTER_API_KEY || '',
         maxRetries: 2,
+        skipOn429: true,
+    },
+    {
+        // Gemma 2 9B — Very reliable fallback
+        name: 'gemma-2-9b',
+        model: 'google/gemma-2-9b-it:free',
+        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+        maxRetries: 1,
         skipOn429: true,
     },
 ];
