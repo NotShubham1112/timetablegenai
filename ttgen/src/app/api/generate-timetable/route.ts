@@ -148,6 +148,22 @@ export async function POST(request: NextRequest) {
             maxHoursPerWeek: f.max_hours_per_week,
         }));
 
+        // If no faculty exist, create virtual faculty so the scheduler can still run.
+        // Virtual IDs start with 'virtual-' so we can detect them when inserting slots.
+        const hasRealFaculty = schedulerFaculty.length > 0;
+        if (!hasRealFaculty) {
+            console.log('No faculty found in database — using virtual faculty placeholders');
+            // Create enough virtual faculty to cover all subjects
+            const numVirtual = Math.max(3, Math.ceil(subjects.length / 2));
+            for (let i = 0; i < numVirtual; i++) {
+                schedulerFaculty.push({
+                    id: `virtual-faculty-${i}`,
+                    name: `Faculty ${i + 1} (TBA)`,
+                    maxHoursPerWeek: 24,
+                });
+            }
+        }
+
         const schedulerBatches: Batch[] = (batches || []).map(b => ({
             id: b.id,
             code: b.code,
@@ -193,7 +209,9 @@ export async function POST(request: NextRequest) {
         };
 
         // Generate timetable
+        console.log(`Scheduling ${schedulerSubjects.length} subjects, ${schedulerFaculty.length} faculty (real: ${hasRealFaculty}), ${schedulerRooms.length} rooms`);
         const solution = generateTimetable(config, context);
+        console.log(`Result: ${solution.assignments.length} assigned, ${solution.unassigned.length} unassigned, ${solution.conflicts.length} conflicts`);
 
         // Clear existing timetable for this semester
         await supabase.from('timetable_slots').delete().eq('semester_id', semester_id);
@@ -203,15 +221,19 @@ export async function POST(request: NextRequest) {
             const slotsToInsert = solution.assignments.map(a => {
                 const subject = subjects.find(s => s.id === a.subjectId);
                 const isLab = subject?.type === 'lab';
+                // Virtual faculty IDs must NOT be inserted into the DB (FK constraint)
+                const isVirtualFaculty = a.facultyId?.startsWith('virtual-');
+                // Virtual batch IDs must NOT be inserted into the DB (FK constraint)
+                const isVirtualBatch = a.batchId === 'default';
 
                 return {
                     college_id: college_id,
                     semester_id: semester_id,
                     subject_id: a.subjectId,
-                    faculty_id: a.facultyId,
+                    faculty_id: isVirtualFaculty ? null : a.facultyId,
                     classroom_id: isLab ? null : a.roomId,
                     lab_id: isLab ? a.roomId : null,
-                    batch_id: a.batchId,
+                    batch_id: isVirtualBatch ? null : (a.batchId || null),
                     day_of_week: a.timeSlot.day,
                     start_time: `${String(a.timeSlot.startHour).padStart(2, '0')}:${String(a.timeSlot.startMinute).padStart(2, '0')}`,
                     end_time: getEndTime(a.timeSlot),

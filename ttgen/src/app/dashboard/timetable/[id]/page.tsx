@@ -191,15 +191,13 @@ export default function TimetablePage() {
                                       : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                                   }`}>
                                     <div className="space-y-0.5">
-                                      <p className="font-bold uppercase">{slot.subject?.code}</p>
-                                      <p className="line-clamp-1 opacity-90">{slot.subject?.name}</p>
+                                      <p className="font-bold uppercase">{slot.subject?.code || '—'}</p>
+                                      <p className="line-clamp-1 opacity-90">{slot.subject?.name || 'Unknown Subject'}</p>
                                     </div>
                                     <div className="mt-auto pt-1 border-t border-current/10 opacity-80 text-[10px]">
-                                      {slot.faculty && (
-                                        <p className="truncate font-medium">{slot.faculty.name}</p>
-                                      )}
+                                      <p className="truncate font-medium">{slot.faculty?.name || 'TBA'}</p>
                                       <p className="truncate">
-                                        {slot.classroom?.name || slot.lab?.name || 'No Room'}
+                                        {slot.classroom?.name || slot.lab?.name || 'TBA'}
                                       </p>
                                     </div>
                                   </div>
@@ -245,8 +243,8 @@ export default function TimetablePage() {
                           <TableCell>{slot.start_time} - {slot.end_time}</TableCell>
                           <TableCell>
                             <div>
-                              <p className="font-medium">{slot.subject?.name}</p>
-                              <p className="text-sm text-muted-foreground">{slot.subject?.code}</p>
+                              <p className="font-medium">{slot.subject?.name || 'Unknown Subject'}</p>
+                              <p className="text-sm text-muted-foreground">{slot.subject?.code || '—'}</p>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -255,7 +253,7 @@ export default function TimetablePage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {slot.classroom?.name || slot.lab?.name || '-'}
+                            {slot.classroom?.name || slot.lab?.name || 'TBA'}
                           </TableCell>
                         </TableRow>
                       ))}
