@@ -1,30 +1,55 @@
 import { ExtractedSubject } from '@/types';
 
-// LLM Configuration for different providers
+// ─── LLM Configuration ────────────────────────────────────────────────────────
+
 interface LLMConfig {
     name: string;
     model: string;
     apiUrl: string;
     apiKey: string;
     maxRetries: number;
+    /** If true, a 429 from this provider aborts retries immediately */
+    skipOn429?: boolean;
 }
 
-const LLM_CONFIGS: LLMConfig[] = [
+/**
+ * OpenRouter free-tier model chain — ordered from most to least capable/reliable.
+ * Rules of thumb:
+ *   - Prefer large instruction-tuned models (they follow JSON schemas better)
+ *   - Avoid the generic "openrouter/free" pseudo-model (returns empty content)
+ *   - Keep maxRetries low for 429-prone providers
+ */
+const OPENROUTER_CONFIGS: LLMConfig[] = [
     {
-        name: 'universal-free',
-        model: 'openrouter/free',
+        // Gemma 3 27B — very capable, handles structured JSON well
+        name: 'gemma-3-27b',
+        model: 'google/gemma-3-27b-it:free',
         apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
         apiKey: process.env.OPENROUTER_API_KEY || '',
         maxRetries: 3,
+        skipOn429: true,
     },
     {
-        name: 'llama-fallback',
-        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        // Mistral 7B — lightweight but reliable JSON emitter
+        name: 'mistral-7b',
+        model: 'mistralai/mistral-7b-instruct:free',
         apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
         apiKey: process.env.OPENROUTER_API_KEY || '',
         maxRetries: 2,
+        skipOn429: true,
+    },
+    {
+        // DeepSeek R1 distill — good reasoning, solid fallback
+        name: 'deepseek-r1-8b',
+        model: 'deepseek/deepseek-r1-distill-llama-8b:free',
+        apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+        maxRetries: 2,
+        skipOn429: true,
     },
 ];
+
+// ─── Extraction Prompt ────────────────────────────────────────────────────────
 
 const EXTRACTION_PROMPT = `You are an academic timetable-intelligence agent.
 
@@ -89,15 +114,19 @@ Important:
 - Fix OCR mistakes automatically.
 - If an item appears under multiple headings, choose the most logical category.
 - Maintain the order in which subjects appear in the syllabus.
+- Respond with ONLY the JSON object — no markdown fences, no explanation.
 
 Now, read the incoming syllabus text and produce ONLY the JSON described above.
 
 Syllabus text:`;
 
+// ─── OpenRouter LLM Caller ────────────────────────────────────────────────────
+
 /**
- * Call LLM with retry logic
+ * Call an OpenRouter model with retry logic.
+ * Throws immediately on 429 if config.skipOn429 is set.
  */
-async function callLLM(config: LLMConfig, prompt: string, text: string): Promise<string> {
+async function callOpenRouterLLM(config: LLMConfig, text: string): Promise<string> {
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${config.apiKey}`,
@@ -110,14 +139,14 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
         messages: [
             {
                 role: 'system',
-                content: 'You are a precise syllabus parser. Always return valid JSON.',
+                content: 'You are a precise syllabus parser. Always return valid JSON with no markdown fences.',
             },
             {
                 role: 'user',
-                content: prompt + '\n\n' + text.substring(0, 15000), // Limit text length
+                content: EXTRACTION_PROMPT + '\n\n' + text.substring(0, 15000),
             },
         ],
-        temperature: 0.1, // Low temperature for more consistent output
+        temperature: 0.1,
         max_tokens: 4000,
     };
 
@@ -131,6 +160,12 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
                 body: JSON.stringify(body),
             });
 
+            // Skip remaining retries on rate-limit — no point waiting
+            if (response.status === 429 && config.skipOn429) {
+                const errorText = await response.text();
+                throw new Error(`RATE_LIMITED:API error (${config.name}): 429 - ${errorText}`);
+            }
+
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`API error (${config.name}): ${response.status} - ${errorText}`);
@@ -139,7 +174,7 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
             const data = await response.json();
             const content = data.choices?.[0]?.message?.content;
 
-            if (!content) {
+            if (!content || content.trim() === '') {
                 throw new Error(`Empty response from ${config.name}`);
             }
 
@@ -148,8 +183,13 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
             lastError = error instanceof Error ? error : new Error(String(error));
             console.warn(`Attempt ${attempt + 1} failed for ${config.name}:`, lastError.message);
 
+            // Bubble up rate-limit errors immediately (no more retries for this provider)
+            if (lastError.message.startsWith('RATE_LIMITED:')) {
+                throw new Error(lastError.message.replace('RATE_LIMITED:', ''));
+            }
+
             if (attempt < config.maxRetries - 1) {
-                // Exponential backoff
+                // Exponential backoff: 1s, 2s, 4s …
                 await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
             }
         }
@@ -158,12 +198,72 @@ async function callLLM(config: LLMConfig, prompt: string, text: string): Promise
     throw lastError || new Error(`All retries failed for ${config.name}`);
 }
 
+// ─── Gemini Native Fallback ───────────────────────────────────────────────────
+
 /**
- * Parse LLM response to extract JSON
+ * Call Google Gemini directly using the REST API.
+ * Used only when all OpenRouter models fail.
+ */
+async function callGeminiFallback(text: string): Promise<string> {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        throw new Error('GEMINI_API_KEY not configured');
+    }
+
+    // Use gemini-1.5-flash — fast, cheap, great JSON output
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const body = {
+        contents: [
+            {
+                parts: [
+                    {
+                        text: EXTRACTION_PROMPT + '\n\n' + text.substring(0, 15000),
+                    },
+                ],
+            },
+        ],
+        generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 4096,
+        },
+    };
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!content || content.trim() === '') {
+        throw new Error('Empty response from Gemini');
+    }
+
+    return content;
+}
+
+// ─── JSON Parser ──────────────────────────────────────────────────────────────
+
+/**
+ * Parse LLM response to extract JSON and convert to ExtractedSubject[]
  */
 function parseJSONResponse(content: string): ExtractedSubject[] {
-    // Try to find JSON in the response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    // Strip markdown fences if the model wrapped the JSON anyway
+    const stripped = content
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```\s*$/, '')
+        .trim();
+
+    // Find the outermost JSON object
+    const jsonMatch = stripped.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
         throw new Error('No JSON object found in response');
     }
@@ -171,17 +271,16 @@ function parseJSONResponse(content: string): ExtractedSubject[] {
     let parsed: any;
     try {
         parsed = JSON.parse(jsonMatch[0]);
-    } catch (error) {
-        // Try cleaning up common JSON issues
+    } catch {
+        // Try cleaning up common JSON issues (trailing commas, etc.)
         const cleaned = jsonMatch[0]
-            .replace(/\n/g, ' ')
             .replace(/,\s*}/g, '}')
             .replace(/,\s*]/g, ']');
         parsed = JSON.parse(cleaned);
     }
 
     const allExtracted: ExtractedSubject[] = [];
-    
+
     // Process Theory Subjects
     if (parsed.subjects && Array.isArray(parsed.subjects)) {
         parsed.subjects.forEach((s: any, index: number) => {
@@ -204,7 +303,7 @@ function parseJSONResponse(content: string): ExtractedSubject[] {
         parsed.labs.forEach((l: any, index: number) => {
             const nameLower = (l.name || '').toLowerCase();
             let predictedLabType = 'computer';
-            
+
             if (nameLower.includes('computer') || nameLower.includes('programming') || nameLower.includes('software')) {
                 predictedLabType = 'computer';
             } else if (nameLower.includes('physics')) {
@@ -254,24 +353,25 @@ function parseJSONResponse(content: string): ExtractedSubject[] {
     return allExtracted;
 }
 
+// ─── Public API ───────────────────────────────────────────────────────────────
+
 /**
- * Extract subjects from syllabus text using LLM
- * Falls back through multiple providers if one fails
+ * Extract subjects from syllabus text using LLM.
+ * Tries OpenRouter free models in order, then falls back to Gemini.
  */
 export async function extractSubjectsFromText(text: string): Promise<ExtractedSubject[]> {
     const errors: string[] = [];
 
-    // Try each LLM in order
-    for (const config of LLM_CONFIGS) {
-        // Skip if API key not configured
+    // ── 1. Try OpenRouter free models ──────────────────────────────────────
+    for (const config of OPENROUTER_CONFIGS) {
         if (!config.apiKey) {
-            console.warn(`Skipping ${config.name}: API key not configured`);
+            console.warn(`Skipping ${config.name}: OPENROUTER_API_KEY not configured`);
             continue;
         }
 
         try {
             console.log(`Trying extraction with ${config.name}...`);
-            const response = await callLLM(config, EXTRACTION_PROMPT, text);
+            const response = await callOpenRouterLLM(config, text);
             const subjects = parseJSONResponse(response);
 
             if (subjects.length === 0) {
@@ -286,16 +386,44 @@ export async function extractSubjectsFromText(text: string): Promise<ExtractedSu
             console.error(`Extraction failed with ${config.name}:`, errorMessage);
         }
     }
-    
-    // If all LLMs failed, throw comprehensive error with helpful configuration advice
-    const combinedErrors = errors.join('\n');
-    let helpfulAdvice = "\n\nTip: Please check your OPENROUTER_API_KEY in .env.local (or your deployment environment variables). Ensure you have sufficient credits/quota.";
-    
-    if (combinedErrors.includes('401')) {
-        helpfulAdvice = "\n\nCRITICAL: One or more providers returned a 401 Unauthorized error. This usually means your API key is invalid, expired, or the account is missing funds.";
+
+    // ── 2. Gemini native fallback ──────────────────────────────────────────
+    if (process.env.GEMINI_API_KEY) {
+        try {
+            console.log('Trying extraction with gemini-1.5-flash (native fallback)...');
+            const response = await callGeminiFallback(text);
+            const subjects = parseJSONResponse(response);
+
+            if (subjects.length === 0) {
+                throw new Error('No subjects extracted');
+            }
+
+            console.log(`Successfully extracted ${subjects.length} subjects using Gemini fallback`);
+            return subjects;
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            errors.push(`gemini-fallback: ${errorMessage}`);
+            console.error('Extraction failed with Gemini fallback:', errorMessage);
+        }
     }
 
-    throw new Error(`Subject extraction failed. We tried multiple free AI models but all attempts were unsuccessful:\n${combinedErrors}${helpfulAdvice}`);
+    // ── 3. All providers failed ────────────────────────────────────────────
+    const combinedErrors = errors.join('\n');
+
+    let helpfulAdvice =
+        '\n\nTip: All free AI models failed. Options:\n' +
+        '  • Add GEMINI_API_KEY to .env.local for a reliable free fallback (https://aistudio.google.com/app/apikey)\n' +
+        '  • Check your OPENROUTER_API_KEY has sufficient quota at https://openrouter.ai/account\n' +
+        '  • Free models may be temporarily overloaded — retry in a few minutes.';
+
+    if (combinedErrors.includes('401')) {
+        helpfulAdvice =
+            '\n\nCRITICAL: A 401 Unauthorized error was received. ' +
+            'Your OPENROUTER_API_KEY is likely invalid or expired. ' +
+            'Please regenerate it at https://openrouter.ai/keys';
+    }
+
+    throw new Error(
+        `Subject extraction failed. We tried multiple AI models but all attempts were unsuccessful:\n${combinedErrors}${helpfulAdvice}`
+    );
 }
-
-
